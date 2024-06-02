@@ -8,22 +8,31 @@ if (!MONGODB_URI) {
   );
 }
 
-// Connect to MongoDB
-mongoose.connect(MONGODB_URI, { bufferCommands: false });
+// @ts-ignore
+declare global {
+  var mongoose: any;
+}
 
-// Connection events
-const db = mongoose.connection;
+let cached = global.mongoose;
 
-db.on("error", (error) => {
-  console.error("MongoDB connection error:", error);
-});
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
-db.once("open", () => {
-  console.log("Connected to MongoDB");
-});
+async function connectMongoDB() {
+  if (cached.conn) {
+    return cached.conn;
+  }
 
-db.once("disconnected", () => {
-  console.log("Disconnected from MongoDB");
-});
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGODB_URI, { bufferCommands: false })
+      .then((mongoose) => {
+        return mongoose;
+      });
+  }
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
 
-export default db;
+export default connectMongoDB;
