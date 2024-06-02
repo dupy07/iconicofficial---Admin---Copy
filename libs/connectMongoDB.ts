@@ -4,35 +4,26 @@ const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+    "Please define the MONGODB_URI environment variable inside Vercel environment settings."
   );
 }
 
-// @ts-ignore
-declare global {
-  var mongoose: any;
-}
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI, { bufferCommands: false });
 
-let cached = global.mongoose;
+// Connection events
+const db = mongoose.connection;
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+db.on("error", (error) => {
+  console.error("MongoDB connection error:", error);
+});
 
-async function connectMongoDB() {
-  if (cached.conn) {
-    return cached.conn;
-  }
+db.once("open", () => {
+  console.log("Connected to MongoDB");
+});
 
-  if (!cached.promise) {
-    cached.promise = mongoose
-      .connect(MONGODB_URI, { bufferCommands: false })
-      .then((mongoose) => {
-        return mongoose;
-      });
-  }
-  cached.conn = await cached.promise;
-  return cached.conn;
-}
+db.once("disconnected", () => {
+  console.log("Disconnected from MongoDB");
+});
 
-export default connectMongoDB;
+export default db;
