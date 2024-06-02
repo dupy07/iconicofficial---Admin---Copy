@@ -40,7 +40,7 @@ const AddCategory: React.FC = () => {
     if (!validate()) return;
 
     try {
-      const res = await fetch("/api/categories", {
+      const res = await fetch("./api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
