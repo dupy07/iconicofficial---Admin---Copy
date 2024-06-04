@@ -131,11 +131,11 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="bg-white p-8 rounded-lg shadow-md max-w-xl w-full relative"
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-xl md:w-1/3 lg:w-1/3 relative h-[700px] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -147,9 +147,9 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
         <h3 className="text-2xl font-bold mb-4">Update Product</h3>
 
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Name */}
-            <div className="mb-4">
+            <div className="mb-4 col-span-2">
               <label htmlFor="name" className="block text-gray-700 mb-2">
                 Name
               </label>
@@ -164,7 +164,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
               />
             </div>
             {/* Description */}
-            <div className="mb-4">
+            <div className="mb-4 col-span-2">
               <label htmlFor="description" className="block text-gray-700 mb-2">
                 Description
               </label>
@@ -178,7 +178,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
               />
             </div>
             {/* Category */}
-            <div className="mb-4">
+            <div className="mb-4 col-span-2">
               <label htmlFor="category" className="block text-gray-700 mb-2">
                 Category
               </label>
@@ -199,7 +199,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
             </div>
 
             {/* Cost Price */}
-            <div className="mb-4">
+            <div className="mb-4 col-span-1">
               <label htmlFor="cost_price" className="block text-gray-700 mb-2">
                 Cost Price
               </label>
@@ -214,7 +214,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
               />
             </div>
             {/* Selling Price */}
-            <div className="mb-4">
+            <div className="mb-4 col-span-1">
               <label
                 htmlFor="selling_price"
                 className="block text-gray-700 mb-2"
@@ -232,7 +232,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
               />
             </div>
             {/* Images */}
-            <div className="mb-4 md:col-span-2">
+            <div className="mb-4 col-span-2">
               <label htmlFor="images" className="block text-gray-700 mb-2">
                 Images
               </label>
@@ -255,11 +255,11 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
               <img
                 src={formData.images[0]}
                 alt={formData.name}
-                className="w-full mb-4"
+                className="w-full mb-4 col-span-2"
               />
             )}
             {/* Total Quantity */}
-            <div className="mb-4 md:col-span-2">
+            <div className="mb-4 col-span-2">
               <label className="block text-gray-700 mb-2">Total Quantity</label>
               <input
                 type="number"
