@@ -365,14 +365,14 @@ const AddOrder: React.FC = () => {
 
             <div className="bg-white p-4">
               <div className="flex flex-col gap-2 mb-4">
-                <label
-                  htmlFor="product-${index}"
-                  className="block fw-bold tracking-tight"
-                >
-                  Product
-                </label>
                 {formData.items.map((item, index) => (
                   <div key={index} className="flex gap-2">
+                    <label
+                      htmlFor={`product-${index}`}
+                      className="block fw-bold tracking-tight"
+                    >
+                      Product
+                    </label>{" "}
                     <select
                       id={`product-${index}`}
                       name="product"
