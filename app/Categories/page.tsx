@@ -15,6 +15,10 @@ const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
+  const [showModal, setShowModal] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -40,6 +44,25 @@ const Categories = () => {
     fetchCategories();
   }, []);
 
+  const handleRowClick = (category: Category) => {
+    setSelectedCategory(category);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedCategory(null);
+    setShowModal(false);
+  };
+
+  const handleUpdateCategory = (updatedCategory: Category) => {
+    setCategories((prevCategories) =>
+      prevCategories.map((cat) =>
+        cat._id === updatedCategory._id ? updatedCategory : cat
+      )
+    );
+    handleCloseModal();
+  };
+
   return (
     <Layout>
       <div className="overflow-x-auto">
@@ -56,7 +79,6 @@ const Categories = () => {
           <thead className="border-b fs-600 fw-bold">
             <tr>
               <th className="w-16 p-4 text-left">#</th>
-
               <th className="w-auto p-4 text-left">Category Name</th>
             </tr>
           </thead>
@@ -84,6 +106,7 @@ const Categories = () => {
                 <tr
                   key={category._id}
                   className="border-b hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleRowClick(category)}
                 >
                   <td className="p-4">{index + 1}</td>
                   <td>
@@ -94,6 +117,13 @@ const Categories = () => {
             )}
           </tbody>
         </table>
+        {showModal && selectedCategory && (
+          <UpdateCategoryModal
+            category={selectedCategory}
+            onClose={handleCloseModal}
+            onUpdate={handleUpdateCategory}
+          />
+        )}
       </div>
     </Layout>
   );
