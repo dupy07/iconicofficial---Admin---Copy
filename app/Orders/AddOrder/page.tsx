@@ -290,7 +290,7 @@ const AddOrder: React.FC = () => {
                   Customer Phone
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   id="phone"
                   name="phone"
                   value={formData.customer.phone}
@@ -366,7 +366,7 @@ const AddOrder: React.FC = () => {
             <div className="bg-white p-4">
               <div className="flex flex-col gap-2 mb-4">
                 <label
-                  htmlFor="product"
+                  htmlFor="product-${index}"
                   className="block fw-bold tracking-tight"
                 >
                   Product
