@@ -263,7 +263,7 @@ const AddProduct: React.FC = () => {
                 </div>
                 <div className="bg-white">
                   <div className="bg-white p-4 flex flex-col gap-2 mb-0">
-                    <label htmlFor="categories" className="block fw-bold">
+                    <label htmlFor="category" className="block fw-bold">
                       Categories
                     </label>
                     {categories && categories.length > 0 ? (
@@ -298,7 +298,7 @@ const AddProduct: React.FC = () => {
               <div className="bg-white p-4">
                 <div className="flex flex-col gap-2 mb-4">
                   <label
-                    htmlFor="name"
+                    htmlFor="cost_price"
                     className="block fw-bold tracking-tight"
                   >
                     Cost Price
@@ -341,10 +341,7 @@ const AddProduct: React.FC = () => {
               {/* Variant Section */}
               <div className="bg-white p-4">
                 <div className="flex flex-col gap-2 mb-4">
-                  <label
-                    htmlFor="name"
-                    className="block fw-bold tracking-tight"
-                  >
+                  <label className="block fw-bold tracking-tight">
                     Variant
                   </label>
                   <div className="mb-4">
