@@ -1,5 +1,5 @@
 "use client";
-import Header from "@/components/Header";
+import Layout from "@/components/Layout";
 import React, { useState, useEffect } from "react";
 
 interface OrderItem {
@@ -247,281 +247,290 @@ const AddOrder: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <div className="p-5">
-        <div className="flex gap-2 py-5 px-6 text-2xl fw-bold">
-          <span>Back | </span>
-          <h3 className="">Add Order</h3>
-        </div>
-        <form onSubmit={handleSubmit}>
-          <div className="bg-white p-4">
-            <div className="flex flex-col gap-2 mb-4">
-              <label htmlFor="name" className="block fw-bold tracking-tight">
-                Customer Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.customer.name}
-                onChange={handleCustomerChange}
-                className="w-full px-3 py-2 border rounded-md"
-                required
-              />
-              {errors.name && <p className="text-red-500">{errors.name}</p>}
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="block fw-bold tracking-tight">
-                Customer Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.customer.email}
-                onChange={handleCustomerChange}
-                className="w-full px-3 py-2 border rounded-md"
-                required
-              />
-              {errors.email && <p className="text-red-500">{errors.email}</p>}
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="phone" className="block fw-bold tracking-tight">
-                Customer Phone
-              </label>
-              <input
-                type="text"
-                id="phone"
-                name="phone"
-                value={formData.customer.phone}
-                onChange={handleCustomerChange}
-                className="w-full px-3 py-2 border rounded-md"
-                required
-              />
-              {errors.phone && <p className="text-red-500">{errors.phone}</p>}
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="province"
-                className="block fw-bold tracking-tight"
-              >
-                Province
-              </label>
-              <input
-                type="text"
-                id="province"
-                name="province"
-                value={formData.customer.province}
-                onChange={handleCustomerChange}
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="city" className="block fw-bold tracking-tight">
-                City
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                value={formData.customer.city}
-                onChange={handleCustomerChange}
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="address" className="block fw-bold tracking-tight">
-                Address
-              </label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.customer.address}
-                onChange={handleCustomerChange}
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="landmark"
-                className="block fw-bold tracking-tight"
-              >
-                Landmark
-              </label>
-              <input
-                type="text"
-                id="landmark"
-                name="landmark"
-                value={formData.customer.landmark}
-                onChange={handleCustomerChange}
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
+      <Layout>
+        <div className="p-5">
+          <div className="flex gap-2 py-5 px-6 text-2xl fw-bold">
+            <span>Back | </span>
+            <h3 className="">Add Order</h3>
           </div>
-
-          <div className="bg-white p-4">
-            <div className="flex flex-col gap-2 mb-4">
-              <label htmlFor="product" className="block fw-bold tracking-tight">
-                Product
-              </label>
-              {formData.items.map((item, index) => (
-                <div key={index} className="flex gap-2">
-                  <select
-                    id={`product-${index}`}
-                    name="product"
-                    value={item.product}
-                    onChange={(e) => handleItemChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-md"
-                    required
-                  >
-                    {products.map((product) => (
-                      <option key={product._id} value={product._id}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    id={`quantity-${index}`}
-                    name="quantity"
-                    value={item.quantity}
-                    onChange={(e) => handleItemChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-md"
-                    required
-                  />
-                  <input
-                    type="number"
-                    id={`price-${index}`}
-                    name="price"
-                    value={item.price}
-                    onChange={(e) => handleItemChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-md"
-                    required
-                    readOnly
-                  />
-                </div>
-              ))}
+          <form onSubmit={handleSubmit}>
+            <div className="bg-white p-4">
+              <div className="flex flex-col gap-2 mb-4">
+                <label htmlFor="name" className="block fw-bold tracking-tight">
+                  Customer Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.customer.name}
+                  onChange={handleCustomerChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                />
+                {errors.name && <p className="text-red-500">{errors.name}</p>}
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email" className="block fw-bold tracking-tight">
+                  Customer Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.customer.email}
+                  onChange={handleCustomerChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                />
+                {errors.email && <p className="text-red-500">{errors.email}</p>}
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="phone" className="block fw-bold tracking-tight">
+                  Customer Phone
+                </label>
+                <input
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  value={formData.customer.phone}
+                  onChange={handleCustomerChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                />
+                {errors.phone && <p className="text-red-500">{errors.phone}</p>}
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="province"
+                  className="block fw-bold tracking-tight"
+                >
+                  Province
+                </label>
+                <input
+                  type="text"
+                  id="province"
+                  name="province"
+                  value={formData.customer.province}
+                  onChange={handleCustomerChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="city" className="block fw-bold tracking-tight">
+                  City
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.customer.city}
+                  onChange={handleCustomerChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="address"
+                  className="block fw-bold tracking-tight"
+                >
+                  Address
+                </label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData.customer.address}
+                  onChange={handleCustomerChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="landmark"
+                  className="block fw-bold tracking-tight"
+                >
+                  Landmark
+                </label>
+                <input
+                  type="text"
+                  id="landmark"
+                  name="landmark"
+                  value={formData.customer.landmark}
+                  onChange={handleCustomerChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
             </div>
+
+            <div className="bg-white p-4">
+              <div className="flex flex-col gap-2 mb-4">
+                <label
+                  htmlFor="product"
+                  className="block fw-bold tracking-tight"
+                >
+                  Product
+                </label>
+                {formData.items.map((item, index) => (
+                  <div key={index} className="flex gap-2">
+                    <select
+                      id={`product-${index}`}
+                      name="product"
+                      value={item.product}
+                      onChange={(e) => handleItemChange(index, e)}
+                      className="w-full px-3 py-2 border rounded-md"
+                      required
+                    >
+                      {products.map((product) => (
+                        <option key={product._id} value={product._id}>
+                          {product.name}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      id={`quantity-${index}`}
+                      name="quantity"
+                      value={item.quantity}
+                      onChange={(e) => handleItemChange(index, e)}
+                      className="w-full px-3 py-2 border rounded-md"
+                      required
+                    />
+                    <input
+                      type="number"
+                      id={`price-${index}`}
+                      name="price"
+                      value={item.price}
+                      onChange={(e) => handleItemChange(index, e)}
+                      className="w-full px-3 py-2 border rounded-md"
+                      required
+                      readOnly
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={addItem}
+                className="w-full bg-blue-500 text-white py-2 rounded-lg"
+              >
+                Add Product
+              </button>
+            </div>
+
+            <div className="bg-white p-4">
+              <div className="flex flex-col gap-2 mb-4">
+                <label
+                  htmlFor="totalAmount"
+                  className="block fw-bold tracking-tight"
+                >
+                  Total Amount
+                </label>
+                <input
+                  type="number"
+                  id="totalAmount"
+                  name="totalAmount"
+                  value={formData.totalAmount}
+                  readOnly
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="orderStatus"
+                  className="block fw-bold tracking-tight"
+                >
+                  Order Status
+                </label>
+                <select
+                  id="orderStatus"
+                  name="orderStatus"
+                  value={formData.orderStatus}
+                  onChange={(e) =>
+                    setFormData({ ...formData, orderStatus: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Dispatched">Dispatched</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Returned">Returned</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="paymentStatus"
+                  className="block fw-bold tracking-tight"
+                >
+                  Payment Status
+                </label>
+                <select
+                  id="paymentStatus"
+                  name="paymentStatus"
+                  value={formData.paymentStatus}
+                  onChange={(e) =>
+                    setFormData({ ...formData, paymentStatus: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  <option value="Paid">Paid</option>
+                  <option value="Unpaid">Unpaid</option>
+                  <option value="Refunded">Refunded</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="paymentMethod"
+                  className="block fw-bold tracking-tight"
+                >
+                  Payment Method
+                </label>
+                <select
+                  id="paymentMethod"
+                  name="paymentMethod"
+                  value={formData.paymentMethod}
+                  onChange={(e) =>
+                    setFormData({ ...formData, paymentMethod: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  <option value="COD">COD</option>
+                  <option value="Online">Online</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="orderNote"
+                  className="block fw-bold tracking-tight"
+                >
+                  Order Note
+                </label>
+                <textarea
+                  id="orderNote"
+                  name="orderNote"
+                  value={formData.orderNote}
+                  onChange={(e) =>
+                    setFormData({ ...formData, orderNote: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+            </div>
+
+            {message && (
+              <div className="text-center text-red-500">{message}</div>
+            )}
             <button
-              type="button"
-              onClick={addItem}
-              className="w-full bg-blue-500 text-white py-2 rounded-lg"
+              type="submit"
+              className="mt-5 ml-2 w-32 bg-green-500 text-white py-2 rounded-lg hover:bg-blue-700"
             >
-              Add Product
+              Add Order
             </button>
-          </div>
-
-          <div className="bg-white p-4">
-            <div className="flex flex-col gap-2 mb-4">
-              <label
-                htmlFor="totalAmount"
-                className="block fw-bold tracking-tight"
-              >
-                Total Amount
-              </label>
-              <input
-                type="number"
-                id="totalAmount"
-                name="totalAmount"
-                value={formData.totalAmount}
-                readOnly
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="orderStatus"
-                className="block fw-bold tracking-tight"
-              >
-                Order Status
-              </label>
-              <select
-                id="orderStatus"
-                name="orderStatus"
-                value={formData.orderStatus}
-                onChange={(e) =>
-                  setFormData({ ...formData, orderStatus: e.target.value })
-                }
-                className="w-full px-3 py-2 border rounded-md"
-              >
-                <option value="Pending">Pending</option>
-                <option value="Processing">Processing</option>
-                <option value="Dispatched">Dispatched</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Returned">Returned</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="paymentStatus"
-                className="block fw-bold tracking-tight"
-              >
-                Payment Status
-              </label>
-              <select
-                id="paymentStatus"
-                name="paymentStatus"
-                value={formData.paymentStatus}
-                onChange={(e) =>
-                  setFormData({ ...formData, paymentStatus: e.target.value })
-                }
-                className="w-full px-3 py-2 border rounded-md"
-              >
-                <option value="Paid">Paid</option>
-                <option value="Unpaid">Unpaid</option>
-                <option value="Refunded">Refunded</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="paymentMethod"
-                className="block fw-bold tracking-tight"
-              >
-                Payment Method
-              </label>
-              <select
-                id="paymentMethod"
-                name="paymentMethod"
-                value={formData.paymentMethod}
-                onChange={(e) =>
-                  setFormData({ ...formData, paymentMethod: e.target.value })
-                }
-                className="w-full px-3 py-2 border rounded-md"
-              >
-                <option value="COD">COD</option>
-                <option value="Online">Online</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="orderNote"
-                className="block fw-bold tracking-tight"
-              >
-                Order Note
-              </label>
-              <textarea
-                id="orderNote"
-                name="orderNote"
-                value={formData.orderNote}
-                onChange={(e) =>
-                  setFormData({ ...formData, orderNote: e.target.value })
-                }
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
-          </div>
-
-          {message && <div className="text-center text-red-500">{message}</div>}
-          <button
-            type="submit"
-            className="mt-5 ml-2 w-32 bg-green-500 text-white py-2 rounded-lg hover:bg-blue-700"
-          >
-            Add Order
-          </button>
-        </form>
-      </div>
+          </form>
+        </div>
+      </Layout>
     </>
   );
 };
