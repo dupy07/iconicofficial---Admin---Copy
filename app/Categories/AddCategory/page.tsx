@@ -1,5 +1,6 @@
 "use client";
 import Header from "@/components/Header";
+import Layout from "@/components/Layout";
 import React, { useState } from "react";
 
 interface CategoryFormData {
@@ -68,58 +69,61 @@ const AddCategory: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <div className="p-5">
-        <div className="flex gap-2 py-5 px-6 text-2xl fw-bold">
-          <span>Back | </span>
-          <h3 className="">Add Category</h3>
-        </div>
-        <form onSubmit={handleSubmit}>
-          <div className="bg-white p-4">
-            <div className="flex flex-col gap-2 mb-4">
-              <label htmlFor="name" className="block fw-bold tracking-tight">
-                Category Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md"
-                required
-              />
-              {errors.name && <p className="text-red-500">{errors.name}</p>}
-            </div>
-            <div className="flex flex-col gap-2 mb-4">
-              <label
-                htmlFor="description"
-                className="block fw-bold tracking-tight"
-              >
-                Category Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md"
-                required
-              />
-              {errors.description && (
-                <p className="text-red-500">{errors.description}</p>
-              )}
-            </div>
+      <Layout>
+        <div className="p-5">
+          <div className="flex gap-2 py-5 px-6 text-2xl fw-bold">
+            <span>Back | </span>
+            <h3 className="">Add Category</h3>
           </div>
-          {message && <div className="text-center text-red-500">{message}</div>}
-          <button
-            type="submit"
-            className="mt-5 ml-2 w-32 bg-green-500 text-white py-2 rounded-lg hover:bg-blue-700"
-          >
-            Add Category
-          </button>
-        </form>
-      </div>
+          <form onSubmit={handleSubmit}>
+            <div className="bg-white p-4">
+              <div className="flex flex-col gap-2 mb-4">
+                <label htmlFor="name" className="block fw-bold tracking-tight">
+                  Category Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                />
+                {errors.name && <p className="text-red-500">{errors.name}</p>}
+              </div>
+              <div className="flex flex-col gap-2 mb-4">
+                <label
+                  htmlFor="description"
+                  className="block fw-bold tracking-tight"
+                >
+                  Category Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                />
+                {errors.description && (
+                  <p className="text-red-500">{errors.description}</p>
+                )}
+              </div>
+            </div>
+            {message && (
+              <div className="text-center text-red-500">{message}</div>
+            )}
+            <button
+              type="submit"
+              className="mt-5 ml-2 w-32 bg-green-500 text-white py-2 rounded-lg hover:bg-blue-700"
+            >
+              Add Category
+            </button>
+          </form>
+        </div>
+      </Layout>
     </>
   );
 };

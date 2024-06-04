@@ -1,3 +1,4 @@
+"use client";
 // SideBar.tsx
 import React from "react";
 import { SideBarLinks } from "@/constants";
