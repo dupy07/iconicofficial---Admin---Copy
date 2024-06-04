@@ -111,11 +111,11 @@ const UpdateOrderModal: React.FC<UpdateOrderModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="bg-white p-8 rounded-lg shadow-md max-w-xl w-full relative"
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-xl md:w-1/3 lg:w-1/3 relative h-[700px] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
