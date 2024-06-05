@@ -1,4 +1,3 @@
-"use client";
 // SideBar.tsx
 import React from "react";
 import { SideBarLinks } from "@/constants";
@@ -22,7 +21,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
             : "transform -translate-x-full md:translate-x-0"
         }`}
       >
-        <div className="flex items-center p-4 border-b gap-2">
+        <div className="flex items-center p-5 h-20 border-b gap-2">
           <img src="/profile-1.png" alt="Logo" className="w-10 h-10" />
           <h2 className="text-2xl font-bold">
             ICO<span className="text-red-500">NIC</span>
