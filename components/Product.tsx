@@ -176,9 +176,9 @@ const ProductComponent: React.FC = () => {
 
   return (
     <>
-      <div className="overflow-x-auto">
-        <div className="flex flex-wrap items-center justify-between p-5">
-          <h3 className="text-2xl fw-bold pb-2">Products</h3>
+      <div className="">
+        <div className="flex flex-wrap items-center justify-between pb-5">
+          <h3 className="text-2xl fw-bold">Products</h3>
           <div>
             <button
               className="bg-green-500 text-white px-3 py-2 rounded-lg"
@@ -189,7 +189,7 @@ const ProductComponent: React.FC = () => {
           </div>
         </div>
         <div className="w-full overflow-x-auto">
-          <table className="w-full bg-white border border-gray-300">
+          <table className="min-w-[1000px] w-full bg-white border border-gray-300">
             <thead className="border-b fs-600 fw-bold">
               <tr className="whitespace-nowrap text-left">
                 <th className="p-2">#</th>
@@ -321,6 +321,17 @@ const ProductComponent: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {isUpdateModalOpen && currentProduct && (
+        <UpdateProductModal
+          product={currentProduct}
+          onClose={closeUpdateModal}
+          onUpdate={handleUpdateProduct}
+        />
+      )}
+      {isImageModalOpen && currentImage && (
+        <ImageModal imageUrl={currentImage} onClose={closeImageModal} />
+      )}
 
       {isUpdateModalOpen && currentProduct && (
         <UpdateProductModal
