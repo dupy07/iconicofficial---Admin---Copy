@@ -1,5 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { IoEllipsisHorizontalSharp } from "react-icons/io5";
+import {
+  MdOutlineRemoveRedEye,
+  MdOutlineSystemUpdateAlt,
+  MdOutlineDeleteOutline,
+} from "react-icons/md";
+import { CiEdit } from "react-icons/ci";
 import UpdateProductModal from "./UpdateProductModal";
 import ImageModal from "./ImageModal"; // Import the ImageModal component
 import { useRouter } from "next/navigation";
@@ -39,6 +46,8 @@ const ProductComponent: React.FC = () => {
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false); // State for image modal
   const [currentImage, setCurrentImage] = useState<string | null>(null); // State for the current image
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -149,6 +158,14 @@ const ProductComponent: React.FC = () => {
     setCurrentImage(null);
   };
 
+  const toggleDropdown = (productId: string) => {
+    if (dropdownOpen === productId) {
+      setDropdownOpen(null);
+    } else {
+      setDropdownOpen(productId);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -159,7 +176,7 @@ const ProductComponent: React.FC = () => {
 
   return (
     <>
-      <div className="relative flex flex-col mb-6 w-full">
+      <div className="overflow-x-auto">
         <div className="flex flex-wrap items-center justify-between p-5">
           <h3 className="text-2xl fw-bold pb-2">Products</h3>
           <div>
@@ -171,27 +188,17 @@ const ProductComponent: React.FC = () => {
             </button>
           </div>
         </div>
-        <div className="block w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto">
           <table className="w-full bg-white border border-gray-300">
             <thead className="border-b fs-600 fw-bold">
-              <tr className="whitespace-nowrap">
-                <th className=" px-4 py-4">#</th>
-                <th className=" px-4 py-4 text-left">Product Name</th>
-                <th className=" px-4 py-4">Cost Price</th>
-                <th className=" px-4 py-4">Selling Price</th>
-                <th className=" px-4 py-4">Category</th>
-                <th className=" px-4 py-4">Size</th>
-                <th className=" px-4 py-4">Color</th>
-                <th className=" px-4 py-4">
-                  Quantity
-                  <div className="flex justify-between gap-2">
-                    <span>Total</span>
-                    <span>Available</span>
-                  </div>
-                </th>
-                <th className=" px-4 py-4">Inventory Status</th>
-                <th className=" px-4 py-4">Created At</th>
-                <th className=" px-4 py-4">Action</th>
+              <tr className="whitespace-nowrap text-left">
+                <th className="p-2">#</th>
+                <th className="p-2">Name</th>
+                <th className="p-2">Price</th>
+                <th className="p-2">Quantity</th>
+                <th className="p-2">Status</th>
+                <th className="p-2">Created At</th>
+                <th className="p-2">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -200,41 +207,25 @@ const ProductComponent: React.FC = () => {
                   (acc, variant) => acc + variant.quantity,
                   0
                 );
-                const sizes = product.variants
-                  .map((variant) => variant.size)
-                  .join(", ");
-                const colors = product.variants
-                  .map((variant) => variant.color)
-                  .join(", ");
-                const categoryName = product.category.name;
                 return (
                   <tr
                     key={product._id}
-                    className="text-center border-b hover:bg-gray-100 cursor-pointer whitespace-nowrap"
+                    className="text-left border-b hover:bg-gray-100 cursor-pointer whitespace-nowrap"
                   >
-                    <td className="px-5 py-3">{index + 1}</td>
-                    <td className="px-5 py-3 text-left">
+                    <td className="p-3">{index + 1}</td>
+                    <td className="p-3 text-left">
                       <div className="flex gap-5 items-center">
                         <img
                           src={product.images[0]}
                           alt={product.name}
-                          className="w-10 h-10 object-cover object-center cursor-pointer"
-                          onClick={() => openImageModal(product.images[0])} // Add onClick to open the image modal
+                          className="w-9 h-9 object-cover object-center cursor-pointer rounded-lg"
+                          onClick={() => openImageModal(product.images[0])}
                         />
                         {product.name}
                       </div>
                     </td>
                     <td
-                      className="px-5 py-3"
-                      onClick={() => openUpdateModal(product)}
-                    >
-                      रू{" "}
-                      {typeof product.cost_price === "number"
-                        ? product.cost_price.toFixed(2)
-                        : "N/A"}
-                    </td>
-                    <td
-                      className="px-5 py-3"
+                      className="p-3"
                       onClick={() => openUpdateModal(product)}
                     >
                       रू{" "}
@@ -243,59 +234,85 @@ const ProductComponent: React.FC = () => {
                         : "N/A"}
                     </td>
                     <td
-                      className="px-5 py-3"
+                      className="p-3"
                       onClick={() => openUpdateModal(product)}
                     >
-                      {categoryName}
+                      {product.availableQuantity}
                     </td>
                     <td
-                      className="px-5 py-3 uppercase"
+                      className="p-3"
                       onClick={() => openUpdateModal(product)}
                     >
-                      {sizes}
+                      <span
+                        className={`${
+                          totalQuantity > 0
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        } rounded-lg p-1`}
+                      >
+                        {totalQuantity > 0 ? "In Stock" : "Out of Stock"}
+                      </span>
                     </td>
                     <td
-                      className="px-5 py-3"
-                      onClick={() => openUpdateModal(product)}
-                    >
-                      {colors}
-                    </td>
-                    <td
-                      className="px-5 py-3"
-                      onClick={() => openUpdateModal(product)}
-                    >
-                      <div className="flex justify-between">
-                        <span>{totalQuantity}</span>
-                        <span>{product.availableQuantity}</span>
-                      </div>
-                    </td>
-                    <td
-                      className="px-5 py-3"
-                      onClick={() => openUpdateModal(product)}
-                    >
-                      {totalQuantity > 0 ? "In Stock" : "Out of Stock"}
-                    </td>
-                    <td
-                      className="px-5 py-3"
+                      className="p-3"
                       onClick={() => openUpdateModal(product)}
                     >
                       {product.createdAt
                         ? new Date(product.createdAt).toLocaleDateString()
                         : "N/A"}
                     </td>
-                    <td className="px-5 py-3">
-                      <button
-                        onClick={() => deleteProduct(product._id)}
-                        className="bg-red-500 text-white px-5 py-3 rounded-lg mr-2"
-                      >
-                        Delete
-                      </button>
-                      <button
-                        onClick={() => openUpdateModal(product)}
-                        className="bg-green-400 text-white px-4 py-3 rounded-lg"
-                      >
-                        Update
-                      </button>
+                    <td className="p-3">
+                      <div className="inline-block group">
+                        <button
+                          className="bg-gray-200 p-2 rounded-full"
+                          onClick={() => toggleDropdown(product._id)}
+                        >
+                          <IoEllipsisHorizontalSharp size={24} />
+                        </button>
+                        {dropdownOpen === product._id && (
+                          <div className="absolute right-0 mt-2 mr-[7vw] p-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+                            <button
+                              className="flex items-center w-full p-2 text-left hover:bg-gray-100 gap-3"
+                              onClick={() => openImageModal(product.images[0])}
+                            >
+                              <MdOutlineRemoveRedEye
+                                size={20}
+                                className="mr-2"
+                              />
+                              View
+                            </button>
+                            <button
+                              className="flex items-center w-full p-2 text-left hover:bg-gray-100 gap-3"
+                              onClick={() => openUpdateModal(product)}
+                            >
+                              <CiEdit size={20} className="mr-2" />
+                              Edit
+                            </button>
+                            <button
+                              className="flex items-center w-full p-2 text-left hover:bg-gray-100 gap-3"
+                              onClick={() => openUpdateModal(product)}
+                            >
+                              <MdOutlineSystemUpdateAlt
+                                size={20}
+                                className="mr-2"
+                              />
+                              Update
+                            </button>
+                            <div className="flex flex-col mt-5 w-full border-t border-gray-100 ">
+                              <span className="text-gray-500 text-sm px-2 pt-2">
+                                Danger Zone
+                              </span>
+                              <button
+                                className="flex gap-2 w-full text-left text-lg mt-1 p-1 text-red-600 hover:bg-gray-100"
+                                onClick={() => deleteProduct(product._id)}
+                              >
+                                <MdOutlineDeleteOutline size={24} />
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -304,6 +321,7 @@ const ProductComponent: React.FC = () => {
           </table>
         </div>
       </div>
+
       {isUpdateModalOpen && currentProduct && (
         <UpdateProductModal
           product={currentProduct}
