@@ -121,14 +121,6 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
     0
   );
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto z-50"
