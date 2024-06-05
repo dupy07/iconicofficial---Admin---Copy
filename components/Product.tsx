@@ -174,7 +174,7 @@ const ProductComponent: React.FC = () => {
         <div className="block w-full overflow-x-auto">
           <table className="w-full bg-white border border-gray-300">
             <thead className="border-b fs-600 fw-bold">
-              <tr>
+              <tr className="whitespace-nowrap">
                 <th className=" px-4 py-4">#</th>
                 <th className=" px-4 py-4 text-left">Product Name</th>
                 <th className=" px-4 py-4">Cost Price</th>
@@ -210,7 +210,7 @@ const ProductComponent: React.FC = () => {
                 return (
                   <tr
                     key={product._id}
-                    className="text-center border-b hover:bg-gray-100 cursor-pointer"
+                    className="text-center border-b hover:bg-gray-100 cursor-pointer whitespace-nowrap"
                   >
                     <td className="px-5 py-3">{index + 1}</td>
                     <td className="px-5 py-3 text-left">
