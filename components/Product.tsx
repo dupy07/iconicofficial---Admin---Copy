@@ -78,38 +78,17 @@ const ProductComponent: React.FC = () => {
     fetchProductsAndCategories();
   }, []);
 
-  async function deleteProduct(productId: string) {
-    if (!window.confirm("Are you sure you want to delete this product?")) {
-      return;
-    }
-
-    try {
-      const res = await fetch(`/api/products?id=${productId}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to delete product: ${res.statusText}`);
-      }
-
-      const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.message || "Failed to delete product");
-      }
-
-      setProducts((prevProducts) =>
-        prevProducts.filter((product) => product._id !== productId)
-      );
-    } catch (error: any) {
-      console.error("Error deleting product:", error.message);
-      setError(error.message);
-    }
-  }
-
   // Update Function
   const openUpdateModal = (product: Product) => {
     setCurrentProduct(product);
     setIsUpdateModalOpen(true);
+    setDropdownOpen(null); // Close the dropdown
+  };
+
+  const openImageModal = (imageUrl: string) => {
+    setCurrentImage(imageUrl);
+    setIsImageModalOpen(true);
+    setDropdownOpen(null); // Close the dropdown
   };
 
   const closeUpdateModal = () => {
@@ -117,6 +96,10 @@ const ProductComponent: React.FC = () => {
     setCurrentProduct(null);
   };
 
+  const closeImageModal = () => {
+    setIsImageModalOpen(false);
+    setCurrentImage(null);
+  };
   const handleUpdateProduct = async (updatedProduct: Product) => {
     try {
       const res = await fetch(`/api/products?id=${updatedProduct._id}`, {
@@ -142,20 +125,40 @@ const ProductComponent: React.FC = () => {
         )
       );
       closeUpdateModal();
+      setDropdownOpen(null); // Close the dropdown
     } catch (error: any) {
       console.error("Error updating product:", error.message);
       setError(error.message);
     }
   };
 
-  const openImageModal = (imageUrl: string) => {
-    setCurrentImage(imageUrl);
-    setIsImageModalOpen(true);
-  };
+  const deleteProduct = async (productId: string) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) {
+      return;
+    }
 
-  const closeImageModal = () => {
-    setIsImageModalOpen(false);
-    setCurrentImage(null);
+    try {
+      const res = await fetch(`/api/products?id=${productId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to delete product: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error(data.message || "Failed to delete product");
+      }
+
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product._id !== productId)
+      );
+      setDropdownOpen(null); // Close the dropdown
+    } catch (error: any) {
+      console.error("Error deleting product:", error.message);
+      setError(error.message);
+    }
   };
 
   const toggleDropdown = (productId: string) => {
