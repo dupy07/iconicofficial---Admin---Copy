@@ -18,6 +18,8 @@ interface Order {
   customer: Customer;
   items: Item[];
   totalAmount: number;
+  discount: number;
+  additionalPrice: number;
   orderStatus: string;
   paymentStatus: string;
   paymentMethod: string;
@@ -66,6 +68,21 @@ const UpdateOrderModal: React.FC<UpdateOrderModalProps> = ({
 
     fetchProducts();
   }, []);
+  useEffect(() => {
+    const updatedTotalAmount = calculateTotalAmount();
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      totalAmount: updatedTotalAmount,
+    }));
+  }, [formData.items, formData.discount, formData.additionalPrice]);
+  const calculateTotalAmount = () => {
+    const itemsTotal = formData.items.reduce(
+      (sum, item) => sum + item.quantity * item.price,
+      0
+    );
+    const total = itemsTotal - formData.discount + formData.additionalPrice;
+    return total;
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -82,7 +99,7 @@ const UpdateOrderModal: React.FC<UpdateOrderModalProps> = ({
   ) => {
     const { name, value } = e.target;
     const updatedItems = [...formData.items];
-    updatedItems[index] = { ...updatedItems[index], [name]: value };
+    updatedItems[index] = { ...updatedItems[index], [name]: parseFloat(value) };
     setFormData({ ...formData, items: updatedItems });
   };
 
@@ -96,11 +113,6 @@ const UpdateOrderModal: React.FC<UpdateOrderModalProps> = ({
     return product ? product.name : "Unknown Product";
   };
 
-  const totalAmount = formData.items.reduce(
-    (acc, item) => acc + item.quantity * item.price,
-    0
-  );
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -111,7 +123,7 @@ const UpdateOrderModal: React.FC<UpdateOrderModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto z-50"
       onClick={onClose}
     >
       <div
@@ -324,37 +336,62 @@ const UpdateOrderModal: React.FC<UpdateOrderModalProps> = ({
                     required
                   />
                 </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="discount"
+                    className="block text-gray-700 mb-2"
+                  >
+                    Discount
+                  </label>
+                  <input
+                    type="number"
+                    id="discount"
+                    name="discount"
+                    value={formData.discount}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="additionalPrice"
+                    className="block text-gray-700 mb-2"
+                  >
+                    Additional Price
+                  </label>
+                  <input
+                    type="number"
+                    id="additionalPrice"
+                    name="additionalPrice"
+                    value={formData.additionalPrice}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
               </div>
             </div>
           ))}
 
-          {/* Total Amount */}
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Total Amount</label>
+            <label htmlFor="totalAmount" className="block text-gray-700 mb-2">
+              Total Amount
+            </label>
             <input
               type="number"
-              value={totalAmount}
+              id="totalAmount"
+              name="totalAmount"
+              value={formData.totalAmount}
               readOnly
               className="w-full px-3 py-2 border rounded-lg bg-gray-200"
             />
           </div>
 
-          {/* Update button */}
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-            >
-              Update
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          >
+            Update Order
+          </button>
         </form>
       </div>
     </div>

@@ -20,6 +20,8 @@ interface Order {
   customer: Customer;
   items: Item[];
   totalAmount: number;
+  discount: number;
+  additionalPrice: number;
   orderStatus: string;
   paymentStatus: string;
   paymentMethod: string;

@@ -21,6 +21,8 @@ const orderSchema: Schema = new Schema(
     },
     items: { type: [orderItemSchema], required: true },
     totalAmount: { type: Number, required: true },
+    discount: { type: Number, default: 0 }, // New discount field
+    additionalPrice: { type: Number, default: 0 }, // New additional price field
     orderStatus: {
       type: String,
       enum: [
@@ -62,6 +64,8 @@ export interface IOrder extends Document {
   };
   items: IOrderItem[];
   totalAmount: number;
+  discount?: number;
+  additionalPrice?: number; // New additional price field
   orderStatus:
     | "Pending"
     | "Processing"
