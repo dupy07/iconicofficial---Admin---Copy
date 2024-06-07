@@ -7,7 +7,6 @@ import RecentOrder from "@/components/RecentOrder";
 
 interface Order {
   _id: string;
-
   totalAmount: number;
   discount: number;
   additionalPrice: number;
