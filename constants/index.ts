@@ -1,19 +1,3 @@
-export const NavLinks = [
-  {
-    href: "/Featured",
-    key: "New & Featured",
-    text: "New & Featured",
-  },
-  {
-    href: "/Men",
-    key: "Men",
-    text: "Men",
-  },
-  { href: "/Women", key: "Women", text: "Women" },
-  { href: "/Sale", key: "Blog", text: "Sale" },
-  { href: "/Contacts", key: "Contacts", text: "Contacts" },
-];
-
 export const SideBarLinks = [
   {
     href: "/Dashboard",
@@ -33,7 +17,7 @@ export const SideBarLinks = [
   {
     href: "/Products",
     key: "Products",
-    text: "Prdoucts",
+    text: "Products",
   },
   {
     href: "/Orders",
