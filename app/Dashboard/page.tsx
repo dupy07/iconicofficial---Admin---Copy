@@ -1,5 +1,4 @@
 "use client"; // pages/dashboard.tsx
-
 import { useEffect, useState } from "react";
 import BarChart from "@/components/BarChart";
 import Layout from "@/components/Layout";
@@ -7,14 +6,13 @@ import RecentOrder from "@/components/RecentOrder";
 
 interface Order {
   _id: string;
-
   totalAmount: number;
   discount: number;
   additionalPrice: number;
   orderStatus: string;
   paymentStatus: string;
   paymentMethod: string;
-  createdDate?: string; // Add this field to indicate payment status
+  createdDate?: string;
 }
 
 interface Variant {
@@ -30,6 +28,12 @@ interface Product {
   variants: Variant[];
 }
 
+interface Category {
+  _id: string;
+  name: string;
+  description: string;
+}
+
 const Dashboard = () => {
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
   const [ordersCount, setOrdersCount] = useState<number>(0);
@@ -40,22 +44,37 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resOrders = await fetch("/api/orders");
         const resProducts = await fetch("/api/products");
+        const resOrders = await fetch("/api/orders");
+        const resCategories = await fetch("/api/categories");
 
-        if (!resOrders.ok || !resProducts.ok) {
-          throw new Error("Failed to fetch data");
+        if (!resProducts.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        if (!resOrders.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+        if (!resCategories.ok) {
+          throw new Error("Failed to fetch categories");
         }
 
-        const ordersData = await resOrders.json();
         const productsData = await resProducts.json();
+        const ordersData = await resOrders.json();
+        const categoriesData = await resCategories.json();
 
-        if (!ordersData.success || !productsData.success) {
-          throw new Error("Failed to fetch orders or products");
+        if (!productsData.success) {
+          throw new Error("Failed to fetch products");
+        }
+        if (!ordersData.success) {
+          throw new Error("Failed to fetch orders");
+        }
+        if (!categoriesData.success) {
+          throw new Error("Failed to fetch categories");
         }
 
-        const orders: Order[] = ordersData.data;
         const products: Product[] = productsData.data;
+        const orders: Order[] = ordersData.data;
+        const categories: Category[] = categoriesData.data;
 
         // Filter orders to include only those that are paid and delivered
         const paidAndDeliveredOrders = orders.filter(
@@ -87,6 +106,7 @@ const Dashboard = () => {
 
         setLoading(false);
       } catch (error: any) {
+        console.error("Error:", error);
         setError(error.message);
         setLoading(false);
       }
