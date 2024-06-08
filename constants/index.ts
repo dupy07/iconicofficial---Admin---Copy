@@ -16,7 +16,7 @@ export const NavLinks = [
 
 export const SideBarLinks = [
   {
-    href: "/Dashboard",
+    href: "/",
     key: "Dashboard",
     text: "Dashboard",
   },
