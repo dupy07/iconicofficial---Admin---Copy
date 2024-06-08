@@ -44,33 +44,26 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resProducts = await fetch("/api/products");
-        const resOrders = await fetch("/api/orders");
-        const resCategories = await fetch("/api/categories");
+        const [resProducts, resOrders, resCategories] = await Promise.all([
+          fetch("/api/products"),
+          fetch("/api/orders"),
+          fetch("/api/categories"),
+        ]);
 
-        if (!resProducts.ok) {
-          throw new Error("Failed to fetch products");
-        }
-        if (!resOrders.ok) {
-          throw new Error("Failed to fetch orders");
-        }
-        if (!resCategories.ok) {
+        if (!resProducts.ok) throw new Error("Failed to fetch products");
+        if (!resOrders.ok) throw new Error("Failed to fetch orders");
+        if (!resCategories.ok) throw new Error("Failed to fetch categories");
+
+        const [productsData, ordersData, categoriesData] = await Promise.all([
+          resProducts.json(),
+          resOrders.json(),
+          resCategories.json(),
+        ]);
+
+        if (!productsData.success) throw new Error("Failed to fetch products");
+        if (!ordersData.success) throw new Error("Failed to fetch orders");
+        if (!categoriesData.success)
           throw new Error("Failed to fetch categories");
-        }
-
-        const productsData = await resProducts.json();
-        const ordersData = await resOrders.json();
-        const categoriesData = await resCategories.json();
-
-        if (!productsData.success) {
-          throw new Error("Failed to fetch products");
-        }
-        if (!ordersData.success) {
-          throw new Error("Failed to fetch orders");
-        }
-        if (!categoriesData.success) {
-          throw new Error("Failed to fetch categories");
-        }
 
         const products: Product[] = productsData.data;
         const orders: Order[] = ordersData.data;
