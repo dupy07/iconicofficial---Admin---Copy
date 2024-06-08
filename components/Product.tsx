@@ -249,11 +249,11 @@ const ProductComponent: React.FC = () => {
                       <span
                         className={`${
                           totalQuantity > 0
-                            ? "bg-green-500 text-white"
-                            : "bg-red-500 text-white"
-                        } rounded-lg p-1`}
+                            ? "p-2 bg-green-500 text-white text-xs"
+                            : "p-2 bg-red-500 text-white text-xs"
+                        } rounded-xl`}
                       >
-                        {totalQuantity > 0 ? "In Stock" : "Out of Stock"}
+                        {totalQuantity > 0 ? "Active" : "Out of Stock"}
                       </span>
                     </td>
                     <td
