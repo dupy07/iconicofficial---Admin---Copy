@@ -33,7 +33,7 @@ export const SideBarLinks = [
   {
     href: "/Products",
     key: "Products",
-    text: "Prdoucts",
+    text: "Products",
   },
   {
     href: "/Orders",
