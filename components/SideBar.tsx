@@ -14,14 +14,14 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       <div
-        className={`fixed top-0 left-0 bg-white w-60 h-full border-r transition-transform duration-300 ease-in-out z-50
+        className={`fixed top-0 left-0 bg-background w-60 h-full border-r transition-transform duration-300 ease-in-out z-50
         ${
           isOpen
             ? "transform translate-x-0"
             : "transform -translate-x-full md:translate-x-0"
         }`}
       >
-        <div className="flex items-center p-5 h-20 border-b gap-2 bg-gray-50 md:bg-white">
+        <div className="flex items-center p-5 h-20 border-b gap-2 md:bg-background">
           <img src="/profile-1.png" alt="Logo" className="w-10 h-10" />
           <h2 className="text-2xl font-bold">
             ICO<span className="text-red-500">NIC</span>
@@ -33,8 +33,8 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
               <Link
                 href={link.href}
                 key={link.key}
-                className={`p-1 hover:bg-gray-200 block py-2 text-gray-70
-                ${pathname === link.href ? "active" : ""}`}
+                className={`p-1 hover:bg-muted/50 block py-2 text-gray-70
+                ${pathname === link.href ? "bg-muted/50" : ""}`}
               >
                 {link.text}
               </Link>

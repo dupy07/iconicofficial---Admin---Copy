@@ -1,6 +1,12 @@
 "use client";
+import Header from "@/components/Header";
 import Layout from "@/components/Layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { FaArrowLeft } from "react-icons/fa";
 
 interface Variant {
   size: string;
@@ -41,7 +47,7 @@ const AddProduct: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const router = useRouter();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -191,275 +197,261 @@ const AddProduct: React.FC = () => {
   return (
     <>
       <Layout>
-        <div className="p-5">
-          <div className="flex gap-2 py-5 px-6 text-2xl fw-bold">
-            <span>Back | </span>
-            <h3 className="">Add Products</h3>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="lg:grid grid-cols-2 gap-4">
-              <div className="bg-white p-4">
-                <div className="flex flex-col gap-2 mb-4">
-                  <label
-                    htmlFor="name"
-                    className="block fw-bold tracking-tight"
-                  >
-                    Product Name
-                  </label>
+        <div className="flex gap-2 mb-4 text-2xl fw-bold items-center">
+          <span>
+            <FaArrowLeft onClick={() => router.push("/Products")} />
+          </span>
+          <h3 className="">Add Products</h3>
+        </div>
+        <form onSubmit={handleSubmit} className="border p-4">
+          <div className="lg:grid grid-cols-2 gap-4 mb-4">
+            <div className="bg-background">
+              <div className="flex flex-col gap-2 mb-4">
+                <label htmlFor="name" className="block fw-bold tracking-tight">
+                  Product Name
+                </label>
 
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border rounded-md"
-                    required
-                  />
-                  {errors.name && <p className="text-red-500">{errors.name}</p>}
-                </div>
-                <div className="flex flex-col gap-2 bg-white">
-                  <label
-                    htmlFor="description"
-                    className="block fw-bold tracking-tight"
-                  >
-                    Product Description
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border rounded-md"
-                    required
-                  ></textarea>
-                  {errors.description && (
-                    <p className="text-red-500">{errors.description}</p>
-                  )}
-                </div>
+                <Input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                />
+                {errors.name && <p className="text-red-500">{errors.name}</p>}
               </div>
-              <div className="">
-                <div className="bg-white p-4 flex flex-col gap-2 mb-4">
-                  <label htmlFor="images" className="block fw-bold">
-                    Image URLs
-                  </label>
-                  <input
-                    type="text"
-                    id="images"
-                    name="images"
-                    value={formData.images.join(", ")}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        images: e.target.value.split(", "),
-                      })
-                    }
-                    className="w-full px-3 py-2 border rounded-lg"
-                    placeholder="Enter image URLs separated by commas"
-                  />
-                  {errors.images && (
-                    <p className="text-red-500">{errors.images}</p>
-                  )}
-                </div>
-                <div className="bg-white">
-                  <div className="bg-white p-4 flex flex-col gap-2 mb-0">
-                    <label htmlFor="category" className="block fw-bold">
-                      Categories
-                    </label>
-                    {categories && categories.length > 0 ? (
-                      <select
-                        id="category"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border rounded-md"
-                        required
-                      >
-                        {/* Render options from fetched categories */}
-                        {categories.map((category) => {
-                          return (
-                            <option key={category._id} value={category._id}>
-                              {category.name}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    ) : (
-                      <p>No categories available</p>
-                    )}
-
-                    {errors.category && (
-                      <p className="text-red-500">{errors.category}</p>
-                    )}
-                  </div>
-                </div>
+              <div className="flex flex-col gap-2 bg-background">
+                <label
+                  htmlFor="description"
+                  className="block fw-bold tracking-tight"
+                >
+                  Product Description
+                </label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                ></Textarea>
+                {errors.description && (
+                  <p className="text-red-500">{errors.description}</p>
+                )}
               </div>
-
-              <div className="bg-white p-4">
-                <div className="flex flex-col gap-2 mb-4">
-                  <label
-                    htmlFor="cost_price"
-                    className="block fw-bold tracking-tight"
-                  >
-                    Cost Price
-                  </label>
-
-                  <input
-                    id="cost_price"
-                    type="number"
-                    name="cost_price"
-                    value={formData.cost_price}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border rounded-md"
-                    required
-                  />
-                  {errors.cost_price && (
-                    <p className="text-red-500">{errors.cost_price}</p>
-                  )}
-                </div>
-                <div className="flex flex-col gap-2 bg-white">
-                  <label
-                    htmlFor="selling_price"
-                    className="block fw-bold tracking-tight"
-                  >
-                    Selling Price
-                  </label>
-                  <input
-                    id="selling_price"
-                    type="number"
-                    name="selling_price"
-                    value={formData.selling_price}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border rounded-md"
-                    required
-                  ></input>
-                  {errors.selling_price && (
-                    <p className="text-red-500">{errors.selling_price}</p>
-                  )}
-                </div>
+            </div>
+            <div className="">
+              <div className="bg-background flex flex-col gap-2 mb-4">
+                <label htmlFor="images" className="block fw-bold">
+                  Image URLs
+                </label>
+                <Input
+                  type="text"
+                  id="images"
+                  name="images"
+                  value={formData.images.join(", ")}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      images: e.target.value.split(", "),
+                    })
+                  }
+                  className="w-full px-3 py-2 border rounded-lg"
+                  placeholder="Enter image URLs separated by commas"
+                />
+                {errors.images && (
+                  <p className="text-red-500">{errors.images}</p>
+                )}
               </div>
-              {/* Variant Section */}
-              <div className="bg-white p-4">
-                <div className="flex flex-col gap-2 mb-4">
-                  <label className="block fw-bold tracking-tight">
-                    Variant
+              <div className="bg-background">
+                <div className="bg-background flex flex-col gap-2 mb-0">
+                  <label htmlFor="categories" className="block fw-bold">
+                    Categories
                   </label>
-                  <div className="mb-4">
-                    {formData.variants.map((variant, index) => (
-                      <div key={index} className="mb-4 border p-4 rounded-lg">
-                        <div className="mb-4">
-                          <label
-                            htmlFor={`size-${index}`}
-                            className="block text-gray-700"
-                          >
-                            Size
-                          </label>
-                          <input
-                            type="text"
-                            id={`size-${index}`}
-                            name="size"
-                            value={variant.size}
-                            onChange={(e) => handleVariantChange(index, e)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            required
-                          />
-                          {errors[`variants[${index}].size`] && (
-                            <p className="text-red-500">
-                              {errors[`variants[${index}].size`]}
-                            </p>
-                          )}
-                        </div>
-                        <div className="mb-4">
-                          <label
-                            htmlFor={`color-${index}`}
-                            className="block text-gray-700"
-                          >
-                            Color
-                          </label>
-                          <input
-                            type="text"
-                            id={`color-${index}`}
-                            name="color"
-                            value={variant.color}
-                            onChange={(e) => handleVariantChange(index, e)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            required
-                          />
-                          {errors[`variants[${index}].color`] && (
-                            <p className="text-red-500">
-                              {errors[`variants[${index}].color`]}
-                            </p>
-                          )}
-                        </div>
-                        <div className="mb-4">
-                          <label
-                            htmlFor={`quantity-${index}`}
-                            className="block text-gray-700"
-                          >
-                            Quantity
-                          </label>
-                          <input
-                            type="number"
-                            id={`quantity-${index}`}
-                            name="quantity"
-                            value={variant.quantity}
-                            onChange={(e) => handleVariantChange(index, e)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            required
-                          />
-                          {errors[`variants[${index}].quantity`] && (
-                            <p className="text-red-500">
-                              {errors[`variants[${index}].quantity`]}
-                            </p>
-                          )}
-                        </div>
-                        <div className="mb-4">
-                          <label
-                            htmlFor={`sku-${index}`}
-                            className="block text-gray-700"
-                          >
-                            SKU
-                          </label>
-                          <input
-                            type="text"
-                            id={`sku-${index}`}
-                            name="sku"
-                            value={variant.sku}
-                            onChange={(e) => handleVariantChange(index, e)}
-                            className="w-full px-3 py-2 border rounded-lg"
-                            required
-                          />
-                          {errors[`variants[${index}].sku`] && (
-                            <p className="text-red-500">
-                              {errors[`variants[${index}].sku`]}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-
-                    <button
-                      type="button"
-                      onClick={addVariant}
-                      className="w-full bg-blue-500 text-white py-2 rounded-lg"
+                  {categories && categories.length > 0 ? (
+                    <select
+                      id="category"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border rounded-md"
+                      required
                     >
-                      Add Variant
-                    </button>
-                  </div>
+                      {/* Render options from fetched categories */}
+                      {categories.map((category) => {
+                        return (
+                          <option key={category._id} value={category._id}>
+                            {category.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  ) : (
+                    <p>No categories available</p>
+                  )}
+
+                  {errors.category && (
+                    <p className="text-red-500">{errors.category}</p>
+                  )}
                 </div>
               </div>
             </div>
-            {message && (
-              <div className="text-center text-red-500">{message}</div>
-            )}
-            <button
-              type="submit"
-              className="mt-5 ml-2 w-32 bg-green-500 text-white py-2 rounded-lg hover:bg-blue-700"
-            >
-              Add Product
-            </button>
-          </form>
-        </div>
+
+            <div className="bg-background">
+              <div className="flex flex-col gap-2 mb-4">
+                <label htmlFor="name" className="block fw-bold tracking-tight">
+                  Cost Price
+                </label>
+
+                <Input
+                  id="cost_price"
+                  type="number"
+                  name="cost_price"
+                  value={formData.cost_price}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                />
+                {errors.cost_price && (
+                  <p className="text-red-500">{errors.cost_price}</p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2 bg-background">
+                <label
+                  htmlFor="selling_price"
+                  className="block fw-bold tracking-tight"
+                >
+                  Selling Price
+                </label>
+                <Input
+                  id="selling_price"
+                  type="number"
+                  name="selling_price"
+                  value={formData.selling_price}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                ></Input>
+                {errors.selling_price && (
+                  <p className="text-red-500">{errors.selling_price}</p>
+                )}
+              </div>
+            </div>
+            {/* Variant Section */}
+            <div className="bg-background ">
+              <div className="flex flex-col gap-2 mb-4">
+                <label htmlFor="name" className="block fw-bold tracking-tight">
+                  Variant
+                </label>
+                <div className="mb-4">
+                  {formData.variants.map((variant, index) => (
+                    <div key={index} className="mb-4 border rounded-lg p-4">
+                      <div className="mb-4">
+                        <label
+                          htmlFor={`size-${index}`}
+                          className="block text-gray-700"
+                        >
+                          Size
+                        </label>
+                        <Input
+                          type="text"
+                          id={`size-${index}`}
+                          name="size"
+                          value={variant.size}
+                          onChange={(e) => handleVariantChange(index, e)}
+                          className="w-full px-3 py-2 border rounded-lg"
+                          required
+                        />
+                        {errors[`variants[${index}].size`] && (
+                          <p className="text-red-500">
+                            {errors[`variants[${index}].size`]}
+                          </p>
+                        )}
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor={`color-${index}`}
+                          className="block text-gray-700"
+                        >
+                          Color
+                        </label>
+                        <Input
+                          type="text"
+                          id={`color-${index}`}
+                          name="color"
+                          value={variant.color}
+                          onChange={(e) => handleVariantChange(index, e)}
+                          className="w-full px-3 py-2 border rounded-lg"
+                          required
+                        />
+                        {errors[`variants[${index}].color`] && (
+                          <p className="text-red-500">
+                            {errors[`variants[${index}].color`]}
+                          </p>
+                        )}
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor={`quantity-${index}`}
+                          className="block text-gray-700"
+                        >
+                          Quantity
+                        </label>
+                        <Input
+                          type="number"
+                          id={`quantity-${index}`}
+                          name="quantity"
+                          value={variant.quantity}
+                          onChange={(e) => handleVariantChange(index, e)}
+                          className="w-full px-3 py-2 border rounded-lg"
+                          required
+                        />
+                        {errors[`variants[${index}].quantity`] && (
+                          <p className="text-red-500">
+                            {errors[`variants[${index}].quantity`]}
+                          </p>
+                        )}
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor={`sku-${index}`}
+                          className="block text-gray-700"
+                        >
+                          SKU
+                        </label>
+                        <input
+                          type="text"
+                          id={`sku-${index}`}
+                          name="sku"
+                          value={variant.sku}
+                          onChange={(e) => handleVariantChange(index, e)}
+                          className="w-full px-3 py-2 border rounded-lg"
+                          required
+                        />
+                        {errors[`variants[${index}].sku`] && (
+                          <p className="text-red-500">
+                            {errors[`variants[${index}].sku`]}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+
+                  <Button
+                    onClick={addVariant}
+                    className="w-full bg-blue-500 text-white py-2 rounded-lg"
+                  >
+                    Add Variant
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {message && <div className="text-center text-red-500">{message}</div>}
+          <Button type="submit">Add Product</Button>
+        </form>
       </Layout>
     </>
   );

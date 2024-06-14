@@ -1,15 +1,38 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import { IoEllipsisHorizontalSharp } from "react-icons/io5";
+
+import * as React from "react";
+import { useState, useEffect } from "react";
 import {
-  MdOutlineRemoveRedEye,
-  MdOutlineSystemUpdateAlt,
-  MdOutlineDeleteOutline,
-} from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
-import UpdateProductModal from "./UpdateProductModal";
-import ImageModal from "./ImageModal"; // Import the ImageModal component
+  ColumnDef,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+
+import UpdateProductModal from "./UpdateProductModal";
+import ImageModal from "./ImageModal";
 
 interface Variant {
   size: string;
@@ -28,7 +51,7 @@ interface Product {
   availableQuantity: number;
   images: string[];
   variants: Variant[];
-  createdAt?: string; // Optional createdAt field
+  createdAt?: string;
 }
 
 interface Category {
@@ -44,10 +67,10 @@ const ProductComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
-  const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false); // State for image modal
-  const [currentImage, setCurrentImage] = useState<string | null>(null); // State for the current image
-  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
 
   useEffect(() => {
@@ -78,17 +101,14 @@ const ProductComponent: React.FC = () => {
     fetchProductsAndCategories();
   }, []);
 
-  // Update Function
   const openUpdateModal = (product: Product) => {
     setCurrentProduct(product);
     setIsUpdateModalOpen(true);
-    setDropdownOpen(null); // Close the dropdown
   };
 
   const openImageModal = (imageUrl: string) => {
     setCurrentImage(imageUrl);
     setIsImageModalOpen(true);
-    setDropdownOpen(null); // Close the dropdown
   };
 
   const closeUpdateModal = () => {
@@ -100,6 +120,7 @@ const ProductComponent: React.FC = () => {
     setIsImageModalOpen(false);
     setCurrentImage(null);
   };
+
   const handleUpdateProduct = async (updatedProduct: Product) => {
     try {
       const res = await fetch(`/api/products?id=${updatedProduct._id}`, {
@@ -125,7 +146,6 @@ const ProductComponent: React.FC = () => {
         )
       );
       closeUpdateModal();
-      setDropdownOpen(null); // Close the dropdown
     } catch (error: any) {
       console.error("Error updating product:", error.message);
       setError(error.message);
@@ -154,175 +174,227 @@ const ProductComponent: React.FC = () => {
       setProducts((prevProducts) =>
         prevProducts.filter((product) => product._id !== productId)
       );
-      setDropdownOpen(null); // Close the dropdown
     } catch (error: any) {
       console.error("Error deleting product:", error.message);
       setError(error.message);
     }
   };
 
-  const toggleDropdown = (productId: string) => {
-    if (dropdownOpen === productId) {
-      setDropdownOpen(null);
-    } else {
-      setDropdownOpen(productId);
-    }
-  };
+  const columns: ColumnDef<Product>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Name
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="flex items-center gap-5">
+          <img
+            src={row.original.images[0]}
+            alt={row.original.name}
+            className="w-9 h-9 object-cover object-center cursor-pointer rounded-lg"
+            onClick={() => openImageModal(row.original.images[0])}
+          />
+          {row.original.name}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "selling_price",
+      header: "Price",
+      cell: ({ row }) => `रू ${row.original.selling_price.toFixed(2)}`,
+    },
+    {
+      accessorKey: "availableQuantity",
+      header: "Quantity",
+      cell: ({ row }) => row.original.availableQuantity,
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const totalQuantity = row.original.variants.reduce(
+          (acc, variant) => acc + variant.quantity,
+          0
+        );
+        return (
+          <Button
+            size={"sm"}
+            className={`${
+              totalQuantity > 0
+                ? "p-2 bg-green-500 hover:bg-green-400"
+                : "p-2 bg-red-500 hover:bg-red-400"
+            } rounded-xl text-xs font-semi-bold text-white`}
+          >
+            {totalQuantity > 0 ? "Active" : "Out of Stock"}
+          </Button>
+        );
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created At",
+      cell: ({ row }) =>
+        row.original.createdAt
+          ? new Date(row.original.createdAt).toLocaleDateString()
+          : "N/A",
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const product = row.original;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => openImageModal(product.images[0])}
+              >
+                View
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openUpdateModal(product)}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => deleteProduct(product._id)}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+
+  const table = useReactTable({
+    data: products,
+    columns,
+    state: {
+      sorting,
+      rowSelection,
+    },
+    onSortingChange: setSorting,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <p>Loading...</p>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <p>Error: {error}</p>;
   }
 
   return (
     <>
-      <div className="">
-        <div className="flex flex-wrap items-center justify-between pb-5">
-          <h3 className="text-2xl fw-bold">Products</h3>
-          <div>
-            <button
-              className="bg-green-500 text-white px-3 py-2 rounded-lg"
-              onClick={() => router.push("/Products/AddProduct")}
-            >
-              Add Products
-            </button>
-          </div>
-        </div>
-        <div className="w-full overflow-x-auto">
-          <table className="min-w-[1000px] w-full bg-white border border-gray-300">
-            <thead className="border-b fs-600 fw-bold">
-              <tr className="whitespace-nowrap text-left">
-                <th className="p-2">#</th>
-                <th className="p-2">Name</th>
-                <th className="p-2">Price</th>
-                <th className="p-2">Quantity</th>
-                <th className="p-2">Status</th>
-                <th className="p-2">Created At</th>
-                <th className="p-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product, index) => {
-                const totalQuantity = product.variants.reduce(
-                  (acc, variant) => acc + variant.quantity,
-                  0
-                );
-                return (
-                  <tr
-                    key={product._id}
-                    className="text-left border-b hover:bg-gray-100 cursor-pointer whitespace-nowrap"
-                  >
-                    <td className="p-3">{index + 1}</td>
-                    <td className="p-3 text-left">
-                      <div className="flex gap-5 items-center">
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-9 h-9 object-cover object-center cursor-pointer rounded-lg"
-                          onClick={() => openImageModal(product.images[0])}
-                        />
-                        {product.name}
-                      </div>
-                    </td>
-                    <td
-                      className="p-3"
-                      onClick={() => openUpdateModal(product)}
-                    >
-                      रू{" "}
-                      {typeof product.selling_price === "number"
-                        ? product.selling_price.toFixed(2)
-                        : "N/A"}
-                    </td>
-                    <td
-                      className="p-3"
-                      onClick={() => openUpdateModal(product)}
-                    >
-                      {product.availableQuantity}
-                    </td>
-                    <td
-                      className="p-3"
-                      onClick={() => openUpdateModal(product)}
-                    >
-                      <span
-                        className={`${
-                          totalQuantity > 0
-                            ? "p-2 bg-green-500 text-white text-xs"
-                            : "p-2 bg-red-500 text-white text-xs"
-                        } rounded-xl`}
-                      >
-                        {totalQuantity > 0 ? "Active" : "Out of Stock"}
-                      </span>
-                    </td>
-                    <td
-                      className="p-3"
-                      onClick={() => openUpdateModal(product)}
-                    >
-                      {product.createdAt
-                        ? new Date(product.createdAt).toLocaleDateString()
-                        : "N/A"}
-                    </td>
-                    <td className="p-3">
-                      <div className="inline-block group">
-                        <button
-                          className="bg-gray-200 p-2 rounded-full"
-                          onClick={() => toggleDropdown(product._id)}
-                        >
-                          <IoEllipsisHorizontalSharp size={24} />
-                        </button>
-                        {dropdownOpen === product._id && (
-                          <div className="absolute right-0 mt-2 mr-[7vw] p-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
-                            <button
-                              className="flex items-center w-full p-2 text-left hover:bg-gray-100 gap-3"
-                              onClick={() => openImageModal(product.images[0])}
-                            >
-                              <MdOutlineRemoveRedEye
-                                size={20}
-                                className="mr-2"
-                              />
-                              View
-                            </button>
-                            <button
-                              className="flex items-center w-full p-2 text-left hover:bg-gray-100 gap-3"
-                              onClick={() => openUpdateModal(product)}
-                            >
-                              <CiEdit size={20} className="mr-2" />
-                              Edit
-                            </button>
-                            <button
-                              className="flex items-center w-full p-2 text-left hover:bg-gray-100 gap-3"
-                              onClick={() => openUpdateModal(product)}
-                            >
-                              <MdOutlineSystemUpdateAlt
-                                size={20}
-                                className="mr-2"
-                              />
-                              Update
-                            </button>
-                            <div className="flex flex-col mt-5 w-full border-t border-gray-100 ">
-                              <span className="text-gray-500 text-sm px-2 pt-2">
-                                Danger Zone
-                              </span>
-                              <button
-                                className="flex gap-2 w-full text-left text-lg mt-1 p-1 text-red-600 hover:bg-gray-100"
-                                onClick={() => deleteProduct(product._id)}
-                              >
-                                <MdOutlineDeleteOutline size={24} />
-                                Delete
-                              </button>
-                            </div>
-                          </div>
+      <div className="flex justify-between mb-4">
+        <h3 className="text-xl sm:text-2xl font-bold pb-2">Products</h3>
+        <Button
+          variant={"outline"}
+          onClick={() => router.push("/Products/AddProduct")}
+        >
+          {" "}
+          Add Product
+        </Button>
+      </div>
+      <div className="mb-4">
+        <Input
+          placeholder="Search..."
+          onChange={(e) => {
+            const value = e.target.value.toLowerCase();
+            setProducts((prevProducts) =>
+              prevProducts.filter((product) =>
+                product.name.toLowerCase().includes(value)
+              )
+            );
+          }}
+        />
+      </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
 
       {isUpdateModalOpen && currentProduct && (
@@ -332,17 +404,7 @@ const ProductComponent: React.FC = () => {
           onUpdate={handleUpdateProduct}
         />
       )}
-      {isImageModalOpen && currentImage && (
-        <ImageModal imageUrl={currentImage} onClose={closeImageModal} />
-      )}
 
-      {isUpdateModalOpen && currentProduct && (
-        <UpdateProductModal
-          product={currentProduct}
-          onClose={closeUpdateModal}
-          onUpdate={handleUpdateProduct}
-        />
-      )}
       {isImageModalOpen && currentImage && (
         <ImageModal imageUrl={currentImage} onClose={closeImageModal} />
       )}

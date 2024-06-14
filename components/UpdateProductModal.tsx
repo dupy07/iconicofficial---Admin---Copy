@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 
 interface Variant {
   size: string;
@@ -127,7 +128,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-xl md:w-1/3 lg:w-1/3 relative h-[700px] overflow-y-auto"
+        className="bg-background p-8 rounded-lg shadow-md w-full max-w-xl md:w-1/3 lg:w-1/3 relative h-[700px] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -151,7 +152,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border rounded-lg bg-background"
                 required
               />
             </div>
@@ -165,7 +166,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border rounded-lg bg-background"
                 required
               />
             </div>
@@ -179,7 +180,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 name="category"
                 value={formData.category._id}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border rounded-lg bg-background"
                 required
               >
                 {categories.map((cat) => (
@@ -201,7 +202,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 name="cost_price"
                 value={formData.cost_price}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border rounded-lg bg-background"
                 required
               />
             </div>
@@ -219,7 +220,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 name="selling_price"
                 value={formData.selling_price}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border rounded-lg bg-background"
                 required
               />
             </div>
@@ -239,7 +240,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     .map((img) => img.trim());
                   setFormData({ ...formData, images: value });
                 }}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border rounded-lg bg-background"
                 required
               />
             </div>
@@ -257,13 +258,13 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                 type="number"
                 value={totalQuantity}
                 readOnly
-                className="w-full px-3 py-2 border rounded-lg bg-gray-200"
+                className="w-full px-3 py-2 border rounded-lg bg-background"
               />
             </div>
           </div>
           {/* Variant fields */}
           {formData.variants.map((variant, index) => (
-            <div key={index} className="mb-4 border p-4 rounded-lg">
+            <div key={index} className="mb-4 border p-4 rounded-lg ">
               <h5 className="text-lg font-semibold mb-2">
                 Variant {index + 1}
               </h5>
@@ -282,7 +283,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     name="size"
                     value={variant.size}
                     onChange={(e) => handleVariantChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg bg-background"
                     required
                   />
                 </div>
@@ -300,7 +301,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     name="color"
                     value={variant.color}
                     onChange={(e) => handleVariantChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg bg-background"
                     required
                   />
                 </div>
@@ -318,7 +319,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     name="quantity"
                     value={variant.quantity}
                     onChange={(e) => handleVariantChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg bg-background"
                     required
                   />
                 </div>
@@ -336,7 +337,7 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
                     name="sku"
                     value={variant.sku}
                     onChange={(e) => handleVariantChange(index, e)}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border rounded-lg bg-background"
                     required
                   />
                 </div>
@@ -344,20 +345,14 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
             </div>
           ))}
           {/* Update button */}
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2"
-            >
+          <div className="flex justify-end gap-2">
+            <Button onClick={onClose} variant={"secondary"}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-            >
+            </Button>
+
+            <Button type="submit" variant={"ghost"}>
               Update
-            </button>
+            </Button>
           </div>
         </form>
       </div>

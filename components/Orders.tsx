@@ -1,7 +1,36 @@
 "use client";
 import { useEffect, useState } from "react";
-import UpdateOrderModal from "./UpdateOrderModal";
 import { useRouter } from "next/navigation";
+import {
+  ColumnDef,
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import UpdateOrderModal from "./UpdateOrderModal";
+import { IoEllipsisHorizontalSharp } from "react-icons/io5";
+import { CiEdit } from "react-icons/ci";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 
 interface Customer {
   name: string;
@@ -34,6 +63,8 @@ const OrderComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
 
   useEffect(() => {
@@ -61,35 +92,6 @@ const OrderComponent: React.FC = () => {
     fetchOrders();
   }, []);
 
-  async function deleteOrder(orderId: string) {
-    if (!window.confirm("Are you sure you want to delete this order?")) {
-      return;
-    }
-
-    try {
-      const res = await fetch(`/api/orders?id=${orderId}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to delete order: ${res.statusText}`);
-      }
-
-      const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.message || "Failed to delete order");
-      }
-
-      setOrders((prevOrders) =>
-        prevOrders.filter((order) => order._id !== orderId)
-      );
-    } catch (error: any) {
-      console.error("Error deleting order:", error.message);
-      setError(error.message);
-    }
-  }
-
-  // Update Function
   const openUpdateModal = (order: Order) => {
     setCurrentOrder(order);
     setIsUpdateModalOpen(true);
@@ -131,6 +133,126 @@ const OrderComponent: React.FC = () => {
     }
   };
 
+  const deleteOrder = async (orderId: string) => {
+    if (!window.confirm("Are you sure you want to delete this order?")) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/orders?id=${orderId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to delete order: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error(data.message || "Failed to delete order");
+      }
+
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order._id !== orderId)
+      );
+    } catch (error: any) {
+      console.error("Error deleting order:", error.message);
+      setError(error.message);
+    }
+  };
+
+  const columns: ColumnDef<Order>[] = [
+    {
+      accessorKey: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "customer.name",
+      header: "Customer Name",
+    },
+    {
+      accessorKey: "customer.phone",
+      header: "Phone",
+    },
+    {
+      accessorKey: "totalAmount",
+      header: "Total Amount",
+      cell: ({ row }) => `रू ${row.original.totalAmount.toFixed(2)}`,
+    },
+    {
+      accessorKey: "orderStatus",
+      header: "Order Status",
+    },
+    {
+      accessorKey: "paymentStatus",
+      header: "Payment Status",
+    },
+    {
+      accessorKey: "paymentMethod",
+      header: "Payment Method",
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const order = row.original;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <IoEllipsisHorizontalSharp size={24} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => openUpdateModal(order)}>
+                <CiEdit size={20} className="mr-2" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => deleteOrder(order._id)}>
+                <MdOutlineDeleteOutline size={20} className="mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+
+  const table = useReactTable({
+    data: orders,
+    columns,
+    state: {
+      sorting,
+      rowSelection,
+    },
+    onSortingChange: setSorting,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -140,141 +262,89 @@ const OrderComponent: React.FC = () => {
   }
 
   return (
-    <>
-      <div className="">
-        <h3 className="text-xl sm:text-2xl font-bold pb-2">Orders</h3>
-        <div className="flex flex-col sm:flex-row justify-between items-center pt-3 pb-8">
-          <div className="flex gap-2">
-            <button className="bg-green-400 text-white px-3 py-2 sm:px-4 sm:py-3 rounded-lg">
-              Active
-            </button>
-            <button className="bg-green-400 text-white px-3 py-2 sm:px-4 sm:py-3 rounded-lg">
-              Pending
-            </button>
-            <button className="bg-green-400 text-white px-3 py-2 sm:px-4 sm:py-3 rounded-lg">
-              Completed
-            </button>
-          </div>
-          <div className="mt-4 sm:mt-0">
-            <button
-              className="bg-green-500 text-white px-3 py-2 rounded-lg"
-              onClick={() => router.push("/Orders/AddOrder")}
-            >
-              Add Order
-            </button>
-          </div>
+    <div>
+      <h3 className="text-xl sm:text-2xl font-bold pb-2">Orders</h3>
+      <div className="flex flex-col sm:flex-row justify-between items-center pt-3 pb-8">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
+          <Button className="rounded-none" variant={"secondary"}>
+            Active
+          </Button>{" "}
+          <Button className="rounded-none" variant={"secondary"}>
+            Pending
+          </Button>{" "}
+          <Button className="rounded-none" variant={"secondary"}>
+            Completed
+          </Button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead className="border-b text-xs sm:text-base font-semibold">
-              <tr>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">#</th>
-                <th className="w-3/16 px-2 sm:px-4 py-2 sm:py-4 text-left">
-                  Customer Name
-                </th>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">Email</th>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">Phone</th>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">
-                  Total Amount
-                </th>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">
-                  Order Status
-                </th>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">
-                  Payment Status
-                </th>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">
-                  Payment Method
-                </th>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">Created At</th>
-                <th className="w-1/16 px-2 sm:px-4 py-2 sm:py-4">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order, index) => (
-                <tr
-                  key={order._id}
-                  className="text-center border-b hover:bg-gray-100 cursor-pointer"
-                >
-                  <td className="px-2 sm:px-5 py-2 sm:py-3">{index + 1}</td>
-                  <td
-                    className="px-2 sm:px-5 py-2 sm:py-3 text-left"
-                    onClick={() => openUpdateModal(order)}
-                  >
-                    {order.customer.name}
-                  </td>
-                  <td
-                    className="px-2 sm:px-5 py-2 sm:py-3"
-                    onClick={() => openUpdateModal(order)}
-                  >
-                    {order.customer.email}
-                  </td>
-                  <td
-                    className="px-2 sm:px-5 py-2 sm:py-3"
-                    onClick={() => openUpdateModal(order)}
-                  >
-                    {order.customer.phone}
-                  </td>
-                  <td
-                    className="px-2 sm:px-5 py-2 sm:py-3"
-                    onClick={() => openUpdateModal(order)}
-                  >
-                    रू {order.totalAmount.toFixed(2)}
-                  </td>
-                  <td
-                    className="px-2 sm:px-5 py-2 sm:py-3"
-                    onClick={() => openUpdateModal(order)}
-                  >
-                    {order.orderStatus}
-                  </td>
-                  <td
-                    className="px-2 sm:px-5 py-2 sm:py-3"
-                    onClick={() => openUpdateModal(order)}
-                  >
-                    {order.paymentStatus}
-                  </td>
-                  <td
-                    className="px-2 sm:px-5 py-2 sm:py-3"
-                    onClick={() => openUpdateModal(order)}
-                  >
-                    {order.paymentMethod}
-                  </td>
-                  <td
-                    className="px-2 sm:px-5 py-2 sm:py-3"
-                    onClick={() => openUpdateModal(order)}
-                  >
-                    {order.createdDate
-                      ? new Date(order.createdDate).toLocaleDateString()
-                      : "N/A"}
-                  </td>
-                  <td className="px-2 sm:px-5 py-2 sm:py-3">
-                    <button
-                      onClick={() => deleteOrder(order._id)}
-                      className="bg-red-500 text-white px-2 sm:px-5 py-2 sm:py-3 rounded-lg mr-2"
-                    >
-                      Delete
-                    </button>
-                    <button
-                      onClick={() => openUpdateModal(order)}
-                      className="bg-green-400 text-white px-2 sm:px-4 py-2 sm:py-3 rounded-lg"
-                    >
-                      Update
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-4 sm:mt-0 w-full sm:w-auto">
+          <Button
+            onClick={() => router.push("/Orders/AddOrder")}
+            variant={"outline"}
+            className="w-full sm:w-auto"
+          >
+            Add Order
+          </Button>{" "}
         </div>
-        {isUpdateModalOpen && currentOrder && (
-          <UpdateOrderModal
-            order={currentOrder}
-            onClose={closeUpdateModal}
-            onUpdate={handleUpdateOrder}
-          />
-        )}
       </div>
-    </>
+
+      <div className="overflow-x-auto rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="cursor-pointer"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {isUpdateModalOpen && currentOrder && (
+        <UpdateOrderModal
+          order={currentOrder}
+          onClose={closeUpdateModal}
+          onUpdate={handleUpdateOrder}
+        />
+      )}
+    </div>
   );
 };
 
