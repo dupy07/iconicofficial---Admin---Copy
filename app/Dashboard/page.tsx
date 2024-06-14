@@ -124,7 +124,7 @@ const Dashboard = () => {
         <>
           <h1 className="pb-5 font-bold text-3xl">Dashboard</h1>
           <div className="pb-4 grid lg:grid-cols-3 gap-4">
-            <div className="bg-white flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
+            <div className="bg-background flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
               <div className="flex flex-col w-full pb-4">
                 <p className="text-2xl font-bold">
                   रू {totalRevenue.toFixed(2)}
@@ -135,7 +135,7 @@ const Dashboard = () => {
                 <span className="text-green-700 text-lg">+#%</span>
               </div>
             </div>
-            <div className="bg-white flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
+            <div className="bg-background flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
               <div className="flex flex-col w-full pb-4">
                 <p className="text-2xl font-bold">{ordersCount}</p>
                 <p className="text-gray-600">Orders</p>
@@ -144,7 +144,7 @@ const Dashboard = () => {
                 <span className="text-green-700 text-lg">+#%</span>
               </div>
             </div>
-            <div className="bg-white flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
+            <div className="bg-background flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
               <div className="flex flex-col w-full pb-4">
                 <p className="text-2xl font-bold">{availableStock}</p>
                 <p className="text-gray-600">Total Stock</p>
