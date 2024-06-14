@@ -44,54 +44,52 @@ const Dashboard = () => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    const fetchProductsAndCategories = async () => {
+    const fetchData = async () => {
       try {
-        const [resCategories, resProducts, resOrders] = await Promise.all([
-          fetch("/api/categories"),
-          fetch("/api/products"),
-          fetch("/api/orders"),
+        const [categoriesResponse, productsResponse, ordersResponse] =
+          await Promise.all([
+            fetch("/api/categories"),
+            fetch("/api/products"),
+            fetch("/api/orders"),
+          ]);
+
+        if (!categoriesResponse.ok)
+          throw new Error("Failed to fetch categories");
+        if (!productsResponse.ok) throw new Error("Failed to fetch products");
+        if (!ordersResponse.ok) throw new Error("Failed to fetch orders");
+
+        const [categoriesData, productsData, ordersData] = await Promise.all([
+          categoriesResponse.json(),
+          productsResponse.json(),
+          ordersResponse.json(),
         ]);
 
-        if (!resProducts.ok || !resCategories.ok || !resOrders.ok) {
+        if (
+          !categoriesData.success ||
+          !productsData.success ||
+          !ordersData.success
+        ) {
           throw new Error("Failed to fetch data");
         }
 
-        const [categoriesResult, productsResult, ordersResult] =
-          await Promise.all([
-            resCategories.json(),
-            resProducts.json(),
-            resOrders.json(),
-          ]);
+        setCategories(categoriesData.data);
+        setProducts(productsData.data);
 
-        if (
-          productsResult.success &&
-          categoriesResult.success &&
-          ordersResult.success
-        ) {
-          setProducts(productsResult.data);
-          setCategories(categoriesResult.data);
+        const orders: Order[] = ordersData.data;
+        const paidAndDeliveredOrders = orders.filter(
+          (order) =>
+            order.orderStatus === "Delivered" && order.paymentStatus === "Paid"
+        );
 
-          const orders: Order[] = ordersResult.data;
-
-          // Filter orders to include only those that are paid and delivered
-          const paidAndDeliveredOrders = orders.filter(
-            (order) =>
-              order.orderStatus === "Delivered" &&
-              order.paymentStatus === "Paid"
-          );
-
-          // Calculate total revenue
-          const revenue = paidAndDeliveredOrders.reduce(
+        setTotalRevenue(
+          paidAndDeliveredOrders.reduce(
             (acc, order) => acc + order.totalAmount,
             0
-          );
-          setTotalRevenue(revenue);
-
-          // Calculate orders count
-          setOrdersCount(orders.length);
-
-          // Calculate available stock
-          const stock = productsResult.data.reduce(
+          )
+        );
+        setOrdersCount(orders.length);
+        setAvailableStock(
+          productsData.data.reduce(
             (acc: number, product: Product) =>
               acc +
               product.variants.reduce(
@@ -99,11 +97,8 @@ const Dashboard = () => {
                 0
               ),
             0
-          );
-          setAvailableStock(stock);
-        } else {
-          throw new Error("Failed to fetch products or categories");
-        }
+          )
+        );
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -111,7 +106,7 @@ const Dashboard = () => {
       }
     };
 
-    fetchProductsAndCategories();
+    fetchData();
   }, []);
 
   return (
