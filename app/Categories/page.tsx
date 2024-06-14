@@ -75,7 +75,7 @@ const Categories = () => {
             Add Category
           </button>
         </div>
-        <table className="min-w-full bg-white border border-gray-300">
+        <table className="min-w-full bg-background border border-gray-300">
           <thead className="border-b fs-600 fw-bold">
             <tr>
               <th className="w-16 p-4 text-left">#</th>
