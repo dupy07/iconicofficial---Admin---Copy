@@ -37,13 +37,7 @@ interface Product {
   selling_price: number;
 }
 
-interface AddOrderProps {
-  toggleSidebar: () => void;
-}
-
-const AddOrder: React.FC<AddOrderProps> = ({ toggleSidebar }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+const AddOrder: React.FC = () => {
   const [formData, setFormData] = useState<OrderFormData>({
     customer: {
       name: "",
