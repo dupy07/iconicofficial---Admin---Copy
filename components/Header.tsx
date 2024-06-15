@@ -21,15 +21,15 @@ const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
             alt="Logo"
             width={40}
             height={40}
-            className="w-10 h-10 sm:w-12 sm:h-12"
+            className="w-8 h-8 sm:w-12 sm:h-12"
           />
-          <h2 className="text-xl md:text-2xl font-bold">
+          <h2 className="text-lg md:text-xl font-bold">
             ICO<span className="text-red-500">NIC</span>
           </h2>
         </div>
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-3 items-center">
           <ModeToggle />
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-6 w-6 md:h-7 md:w-7 cursor-pointer">
             <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
