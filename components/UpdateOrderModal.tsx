@@ -127,7 +127,7 @@ const UpdateOrderModal: React.FC<UpdateOrderModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-xl md:w-1/3 lg:w-1/3 relative h-[700px] overflow-y-auto"
+        className="bg-background p-8 rounded-lg shadow-md w-full max-w-xl md:w-1/3 lg:w-1/3 relative h-[700px] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
