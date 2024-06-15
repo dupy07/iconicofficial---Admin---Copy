@@ -3,6 +3,7 @@ import React from "react";
 import { SideBarLinks } from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 interface SideBarProps {
   isOpen: boolean;
@@ -22,19 +23,28 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
         }`}
       >
         <div className="flex items-center p-5 h-20 border-b gap-2 md:bg-background">
-          <img src="/profile-1.png" alt="Logo" className="w-10 h-10" />
-          <h2 className="text-2xl font-bold">
+          <Image
+            src="/profile-1.png"
+            alt="Logo"
+            width={50}
+            height={50}
+            className="w-8 h-8 sm:w-10 sm:h-10"
+          />
+          <h2 className="text-lg md:text-xl font-bold">
             ICO<span className="text-red-500">NIC</span>
           </h2>
         </div>
-        <div className="mt-7">
-          <ul role="list" className="flex flex-col fs-400 px-5">
+        <div className="mt-2">
+          <ul
+            role="list"
+            className="flex flex-col text-sm px-4 sm:text-xs sm:px-3"
+          >
             {SideBarLinks.map((link) => (
               <Link
                 href={link.href}
                 key={link.key}
                 className={`flex items-center pl-2 rounded-lg hover:bg-muted/50 gap-2 py-2 text-gray-70
-               ${pathname === link.href ? "bg-muted/50" : ""}`}
+                ${pathname === link.href ? "bg-muted/50" : ""}`}
               >
                 <link.icon /> {link.text}
               </Link>
