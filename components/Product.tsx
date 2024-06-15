@@ -217,7 +217,7 @@ const ProductComponent: React.FC = () => {
         );
       },
       cell: ({ row }) => (
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-2 overflow-x-hidden md:gap-5">
           <img
             src={row.original.images[0]}
             alt={row.original.name}
@@ -372,6 +372,7 @@ const ProductComponent: React.FC = () => {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="whitespace-nowrap"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -403,6 +404,45 @@ const ProductComponent: React.FC = () => {
       {isImageModalOpen && currentImage && (
         <ImageModal imageUrl={currentImage} onClose={closeImageModal} />
       )}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .table-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            padding: 10px;
+          }
+
+          .table-cell img {
+            width: 50px;
+            height: 50px;
+          }
+
+          .table-header,
+          .table-row {
+            display: flex;
+            flex-direction: column;
+          }
+
+          .table-header > *,
+          .table-row > * {
+            margin-bottom: 10px;
+          }
+
+          .table-header {
+            font-size: 14px;
+            font-weight: bold;
+          }
+
+          .table-row {
+            border-bottom: 1px solid #ccc;
+          }
+
+          .whitespace-nowrap {
+            white-space: normal;
+          }
+        }
+      `}</style>
     </>
   );
 };
