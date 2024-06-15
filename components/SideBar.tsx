@@ -33,10 +33,10 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
               <Link
                 href={link.href}
                 key={link.key}
-                className={`p-1 hover:bg-muted/50 block py-2 text-gray-70
-                ${pathname === link.href ? "bg-muted/50" : ""}`}
+                className={`flex items-center pl-2 rounded-lg hover:bg-muted/50 gap-2 py-2 text-gray-70
+               ${pathname === link.href ? "bg-muted/50" : ""}`}
               >
-                {link.text}
+                <link.icon /> {link.text}
               </Link>
             ))}
           </ul>

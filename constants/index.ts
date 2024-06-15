@@ -1,48 +1,58 @@
-export const NavLinks = [
-  {
-    href: "/Featured",
-    key: "New & Featured",
-    text: "New & Featured",
-  },
-  {
-    href: "/Men",
-    key: "Men",
-    text: "Men",
-  },
-  { href: "/Women", key: "Women", text: "Women" },
-  { href: "/Sale", key: "Blog", text: "Sale" },
-  { href: "/Contacts", key: "Contacts", text: "Contacts" },
-];
+import { IoMdHome } from "react-icons/io";
+import { FaUsers, FaBoxOpen, FaTags, FaChartBar } from "react-icons/fa";
+import { MdCategory, MdDashboard } from "react-icons/md";
 
-export const SideBarLinks = [
+// Define the SideBarLink interface
+interface SideBarLink {
+  href: string;
+  key: string;
+  text: string;
+  icon:
+    | typeof IoMdHome
+    | typeof FaUsers
+    | typeof FaBoxOpen
+    | typeof FaTags
+    | typeof FaChartBar
+    | typeof MdCategory
+    | typeof MdDashboard;
+}
+
+// Define the SideBarLinks array
+export const SideBarLinks: SideBarLink[] = [
   {
-    href: "/",
+    href: "/Dashboard",
     key: "Dashboard",
     text: "Dashboard",
+    icon: MdDashboard,
   },
   {
     href: "/StoreUsers",
     key: "StoreUsers",
     text: "Store Users",
+    icon: FaUsers,
   },
   {
     href: "/Categories",
     key: "Categories",
     text: "Categories",
+    icon: MdCategory,
   },
   {
     href: "/Products",
     key: "Products",
     text: "Products",
+    icon: FaBoxOpen,
   },
   {
     href: "/Orders",
     key: "Orders",
     text: "Orders",
+    icon: FaTags,
   },
   {
     href: "/Analytics",
     key: "Analytics",
     text: "Analytics",
+    icon: FaChartBar,
   },
 ];
