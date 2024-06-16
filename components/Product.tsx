@@ -33,6 +33,7 @@ import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 
 import UpdateProductModal from "./UpdateProductModal";
 import ImageModal from "./ImageModal";
+import Image from "next/image";
 
 interface Variant {
   size: string;
@@ -217,11 +218,13 @@ const ProductComponent: React.FC = () => {
         );
       },
       cell: ({ row }) => (
-        <div className="flex items-center gap-5">
-          <img
-            src={row.original.images[0]}
+        <div className="flex items-center gap-1 sm:gap-5  overflow-hidden">
+          <Image
+            src={`/${row.original.images[0]}`}
             alt={row.original.name}
-            className="w-9 h-9 object-cover object-center cursor-pointer rounded-lg"
+            height={60}
+            width={60}
+            className="w-8 h-8 object-cover object-center cursor-pointer rounded-lg"
             onClick={() => openImageModal(row.original.images[0])}
           />
           {row.original.name}
@@ -231,7 +234,11 @@ const ProductComponent: React.FC = () => {
     {
       accessorKey: "selling_price",
       header: "Price",
-      cell: ({ row }) => `रू ${row.original.selling_price.toFixed(2)}`,
+      cell: ({ row }) => (
+        <div className="overflow-hidden">
+          रू ${row.original.selling_price.toFixed(2)}
+        </div>
+      ),
     },
     {
       accessorKey: "availableQuantity",
@@ -250,9 +257,7 @@ const ProductComponent: React.FC = () => {
           <Button
             size={"sm"}
             className={`${
-              totalQuantity > 0
-                ? "p-2 bg-green-500 hover:bg-green-400"
-                : "p-2 bg-red-500 hover:bg-red-400"
+              totalQuantity > 0 ? "p-1 bg-accent " : "p-1 bg-destructive"
             } rounded-xl text-xs font-semi-bold text-white`}
           >
             {totalQuantity > 0 ? "Active" : "Out of Stock"}
@@ -334,7 +339,7 @@ const ProductComponent: React.FC = () => {
           Add Product
         </Button>
       </div>
-      <div className="mb-4">
+      <div className="mb-4 bg-background">
         <Input
           placeholder="Search..."
           onChange={(e) => {
@@ -348,7 +353,7 @@ const ProductComponent: React.FC = () => {
         />
       </div>
 
-      <div className="overflow-x-auto rounded-md border">
+      <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -374,7 +379,7 @@ const ProductComponent: React.FC = () => {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="p-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -385,7 +390,12 @@ const ProductComponent: React.FC = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length}>No results.</TableCell>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
