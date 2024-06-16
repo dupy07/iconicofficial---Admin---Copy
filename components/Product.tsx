@@ -255,14 +255,13 @@ const ProductComponent: React.FC = () => {
           0
         );
         return (
-          <Button
-            size={"sm"}
-            className={`${
-              totalQuantity > 0 ? "p-1 bg-accent " : "p-1 bg-destructive"
+          <div
+            className={`w-24 p-2 text-center ${
+              totalQuantity > 0 ? "bg-green-600" : "bg-red-600"
             } rounded-xl text-xs font-semi-bold text-white`}
           >
-            {totalQuantity > 0 ? "Active" : "Out of Stock"}
-          </Button>
+            {totalQuantity > 0 ? "In Stock" : "Out of Stock"}
+          </div>
         );
       },
     },
