@@ -242,7 +242,7 @@ svg {
 /* General styling for the body */
 body {
   /* font-size: var(--fs-body); */
-  font-family: var(--ff-primary);
+  font-family: var(--ff-poppins);
 }
 .container {
   @apply px-5 mx-auto w-full;
