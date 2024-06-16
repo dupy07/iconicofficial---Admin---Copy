@@ -224,6 +224,7 @@ const ProductComponent: React.FC = () => {
             alt={row.original.name}
             height={60}
             width={60}
+            priority
             className="w-8 h-8 object-cover object-center cursor-pointer rounded-lg"
             onClick={() => openImageModal(row.original.images[0])}
           />
