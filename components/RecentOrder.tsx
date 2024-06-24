@@ -65,13 +65,13 @@ const RecentOrder: React.FC = () => {
                 <FaShoppingBag className="text-purple-800" />
               </div>
               <div className="pl-4">
-                <p className="font-bold text-gray-800">
+                <p className="font-bold text-primary">
                   रू {order.totalAmount.toFixed(2)}
                 </p>
                 <p className="text-sm text-gray-400">{order.customer.name}</p>
               </div>
             </div>
-            <p className="text-sm">
+            <p className="text-xs pt-6">
               {formatDistanceToNow(new Date(order.createdDate), {
                 addSuffix: true,
               })}
