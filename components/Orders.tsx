@@ -287,7 +287,7 @@ const OrderComponent: React.FC = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-md border">
+      <div className="overflow-x-auto rounded-md border bg-secondary">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
