@@ -8,10 +8,10 @@ import Image from "next/image";
 const Header: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
   return (
     <>
-      <div className="text-center py-3 font-semibold sm:hidden">
+      <div className="text-center py-1 font-semibold sm:hidden">
         <span className="text-sm">Welcome to Iconic Official Admin Page</span>
       </div>
-      <div className="rounded-tr-md rounded-br-md border border-gray-300 bg-background flex justify-between items-center h-20 p-5 text-gray-700">
+      <div className="rounded-tr-md rounded-br-md border-y bg-secondary flex justify-between items-center h-20 p-5 ">
         <div className="flex items-center  gap-2 md:gap-3">
           <div className="md:hidden cursor-pointer" onClick={toggleSidebar}>
             <CiMenuBurger size={24} />
