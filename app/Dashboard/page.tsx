@@ -109,6 +109,24 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  const getGreeting = () => {
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) {
+      return "Good morning";
+    } else {
+      return "Good afternoon";
+    }
+  };
+
+  const getCurrentDate = () => {
+    const today = new Date();
+    return today.toLocaleDateString(undefined, {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
   return (
     <Layout>
       {loading ? (
@@ -117,7 +135,17 @@ const Dashboard = () => {
         <div>Error: {error}</div>
       ) : (
         <>
-          <h1 className="pb-5 font-bold text-3xl">Dashboard</h1>
+          <h3 className="font-semibold text-2xl tracking-tight">
+            {getGreeting()}
+          </h3>
+          <h3 className="pb-5 font-medium fs-300 tracking-tight">
+            {" "}
+            Here are your stats for today,{" "}
+            <span className="text-[#8830f7] dark:text-[#54169c] tracking-tight">
+              {getCurrentDate()}
+            </span>
+          </h3>
+
           <div className="pb-4 grid lg:grid-cols-3 gap-4">
             <div className="bg-background flex flex-col md:flex-row justify-between w-full p-4 rounded-lg border">
               <div className="flex flex-col w-full pb-4">

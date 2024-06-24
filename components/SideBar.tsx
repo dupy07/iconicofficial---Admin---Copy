@@ -35,10 +35,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
           </h2>
         </div>
         <div className="mt-2">
-          <ul
-            role="list"
-            className="flex flex-col text-sm px-4 sm:text-xs sm:px-3"
-          >
+          <ul role="list" className="flex flex-col text-sm px-4 sm:px-3">
             {SideBarLinks.map((link) => (
               <Link
                 href={link.href}
