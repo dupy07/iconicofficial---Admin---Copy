@@ -41,7 +41,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
               <Link
                 href={link.href}
                 key={link.key}
-                className={`flex items-center pl-2 rounded-lg hover:bg-muted/50 gap-2 py-2 text-gray-70
+                className={`flex items-center pl-2 rounded-lg hover:bg-[#f6f2ff] dark:hover:bg-[#2e2e2e] gap-2 py-2 text-gray-70
                 ${
                   pathname === link.href ? "bg-[#f6f2ff] dark:bg-[#2e2e2e]" : ""
                 }`}
