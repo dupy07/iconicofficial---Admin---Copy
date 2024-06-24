@@ -52,7 +52,7 @@ const RecentOrder: React.FC = () => {
   }
 
   return (
-    <div className="w-full col-span-1 relative lg:h-[70vh] h-[50vh] p-4 m-auto border rounded-lg bg-background overflow-scroll">
+    <div className="w-full col-span-1 relative lg:h-[70vh] h-[50vh] p-4 m-auto border rounded-lg bg-secondary overflow-scroll">
       <h1 className="text-xl font-bold mb-4">Recent Orders</h1>
       <ul>
         {orders.map((order) => (
