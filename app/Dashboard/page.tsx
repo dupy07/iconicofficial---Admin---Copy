@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import BarChart from "@/components/BarChart";
 import Layout from "@/components/Layout";
 import RecentOrder from "@/components/RecentOrder";
+import Image from "next/image";
 
 interface Order {
   _id: string;
@@ -44,52 +45,54 @@ const Dashboard = () => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProductsAndCategories = async () => {
       try {
-        const [categoriesResponse, productsResponse, ordersResponse] =
-          await Promise.all([
-            fetch("/api/categories"),
-            fetch("/api/products"),
-            fetch("/api/orders"),
-          ]);
-
-        if (!categoriesResponse.ok)
-          throw new Error("Failed to fetch categories");
-        if (!productsResponse.ok) throw new Error("Failed to fetch products");
-        if (!ordersResponse.ok) throw new Error("Failed to fetch orders");
-
-        const [categoriesData, productsData, ordersData] = await Promise.all([
-          categoriesResponse.json(),
-          productsResponse.json(),
-          ordersResponse.json(),
+        const [resCategories, resProducts, resOrders] = await Promise.all([
+          fetch("/api/categories"),
+          fetch("/api/products"),
+          fetch("/api/orders"),
         ]);
 
-        if (
-          !categoriesData.success ||
-          !productsData.success ||
-          !ordersData.success
-        ) {
+        if (!resProducts.ok || !resCategories.ok || !resOrders.ok) {
           throw new Error("Failed to fetch data");
         }
 
-        setCategories(categoriesData.data);
-        setProducts(productsData.data);
+        const [categoriesResult, productsResult, ordersResult] =
+          await Promise.all([
+            resCategories.json(),
+            resProducts.json(),
+            resOrders.json(),
+          ]);
 
-        const orders: Order[] = ordersData.data;
-        const paidAndDeliveredOrders = orders.filter(
-          (order) =>
-            order.orderStatus === "Delivered" && order.paymentStatus === "Paid"
-        );
+        if (
+          productsResult.success &&
+          categoriesResult.success &&
+          ordersResult.success
+        ) {
+          setProducts(productsResult.data);
+          setCategories(categoriesResult.data);
 
-        setTotalRevenue(
-          paidAndDeliveredOrders.reduce(
+          const orders: Order[] = ordersResult.data;
+
+          // Filter orders to include only those that are paid and delivered
+          const paidAndDeliveredOrders = orders.filter(
+            (order) =>
+              order.orderStatus === "Delivered" &&
+              order.paymentStatus === "Paid"
+          );
+
+          // Calculate total revenue
+          const revenue = paidAndDeliveredOrders.reduce(
             (acc, order) => acc + order.totalAmount,
             0
-          )
-        );
-        setOrdersCount(orders.length);
-        setAvailableStock(
-          productsData.data.reduce(
+          );
+          setTotalRevenue(revenue);
+
+          // Calculate orders count
+          setOrdersCount(orders.length);
+
+          // Calculate available stock
+          const stock = productsResult.data.reduce(
             (acc: number, product: Product) =>
               acc +
               product.variants.reduce(
@@ -97,8 +100,11 @@ const Dashboard = () => {
                 0
               ),
             0
-          )
-        );
+          );
+          setAvailableStock(stock);
+        } else {
+          throw new Error("Failed to fetch products or categories");
+        }
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -106,7 +112,7 @@ const Dashboard = () => {
       }
     };
 
-    fetchData();
+    fetchProductsAndCategories();
   }, []);
 
   const getGreeting = () => {
@@ -127,6 +133,7 @@ const Dashboard = () => {
       day: "numeric",
     });
   };
+
   return (
     <Layout>
       {loading ? (
@@ -135,45 +142,58 @@ const Dashboard = () => {
         <div>Error: {error}</div>
       ) : (
         <>
-          <h3 className="font-semibold text-2xl tracking-tight">
+          <h1 className="font-semibold text-black dark:text-primary text-xl tracking-tight">
             {getGreeting()}
-          </h3>
-          <h3 className="pb-5 font-medium fs-300 tracking-tight">
+          </h1>
+          <h1 className="pb-4 fs-300 tracking-tight text-black dark:text-primary">
             {" "}
             Here are your stats for today,{" "}
-            <span className="text-[#8830f7] dark:text-[#54169c] tracking-tight">
+            <span className="text-[#8830f7] dark:text-[#ad85ff] tracking-tight">
               {getCurrentDate()}
             </span>
-          </h3>
-
+          </h1>
           <div className="pb-4 grid lg:grid-cols-3 gap-4">
-            <div className="bg-background flex flex-col md:flex-row justify-between w-full p-4 rounded-lg border">
+            <div className="bg-secondary border flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
               <div className="flex flex-col w-full pb-4">
-                <p className="text-2xl font-bold">
+                <Image
+                  src={"/revenue.png"}
+                  alt="revenue"
+                  width={40}
+                  height={40}
+                  className="pb-4"
+                />
+                <p className="text-[#adb5bd] pb-2"> Revenue</p>
+                <p className="text-3xl font-bold text-primary">
                   रू {totalRevenue.toFixed(2)}
                 </p>
-                <p className="text-gray-600">Total Revenue</p>
-              </div>
-              <div className="flex justify-center items-center p-2 rounded-lg bg-green-200">
-                <span className="text-green-700 text-lg">+#%</span>
               </div>
             </div>
-            <div className="bg-background flex flex-col md:flex-row justify-between w-full p-4 rounded-lg border">
+            <div className="bg-secondary border flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
               <div className="flex flex-col w-full pb-4">
-                <p className="text-2xl font-bold">{ordersCount}</p>
-                <p className="text-gray-600">Orders</p>
-              </div>
-              <div className="flex justify-center items-center p-2 rounded-lg bg-green-200">
-                <span className="text-green-700 text-lg">+#%</span>
+                <Image
+                  src={"/order.png"}
+                  alt="revenue"
+                  width={40}
+                  height={40}
+                  className="pb-4"
+                />
+                <p className="text-[#adb5bd] pb-2">Orders</p>
+                <p className="text-3xl font-bold text-primary">{ordersCount}</p>
               </div>
             </div>
-            <div className="bg-background flex flex-col md:flex-row justify-between w-full p-4 rounded-lg border">
+            <div className="bg-secondary border flex flex-col md:flex-row justify-between w-full p-4 rounded-lg">
               <div className="flex flex-col w-full pb-4">
-                <p className="text-2xl font-bold">{availableStock}</p>
-                <p className="text-gray-600">Total Stock</p>
-              </div>
-              <div className="flex justify-center items-center p-2 rounded-lg bg-green-200">
-                <span className="text-green-700 text-lg">+#%</span>
+                <Image
+                  src={"/stock.png"}
+                  alt="revenue"
+                  width={40}
+                  height={40}
+                  className="pb-4"
+                />
+                <p className="text-[#adb5bd] pb-2"> Stock</p>
+                <p className="text-3xl font-bold text-primary">
+                  {availableStock}
+                </p>
               </div>
             </div>
           </div>

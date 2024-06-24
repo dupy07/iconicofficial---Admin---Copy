@@ -1,4 +1,5 @@
 // SideBar.tsx
+"use client";
 import React from "react";
 import { SideBarLinks } from "@/constants";
 import Link from "next/link";
@@ -15,14 +16,14 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       <div
-        className={`fixed top-0 left-0 bg-background w-60 h-full border-r transition-transform duration-300 ease-in-out z-50
+        className={`fixed top-0 left-0 bg-secondary w-60 h-full  border-r transition-transform duration-300 ease-in-out z-50 
         ${
           isOpen
             ? "transform translate-x-0"
             : "transform -translate-x-full md:translate-x-0"
         }`}
       >
-        <div className="flex items-center p-5 h-20 border-b gap-2 md:bg-background">
+        <div className="flex items-center p-5 h-20  gap-2  dark:bg-muted border-y border-l ">
           <Image
             src="/profile-1.png"
             alt="Logo"
@@ -35,7 +36,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, toggleSidebar }) => {
           </h2>
         </div>
         <div className="mt-2">
-          <ul role="list" className="flex flex-col text-sm px-4 sm:px-3">
+          <ul role="list" className="flex flex-col text-sm  px-4 sm:px-3">
             {SideBarLinks.map((link) => (
               <Link
                 href={link.href}
