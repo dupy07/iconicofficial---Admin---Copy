@@ -76,7 +76,7 @@ const AddCategory: React.FC = () => {
             <h3 className="">Add Category</h3>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="bg-background p-4">
+            <div className="bg-secondary p-4">
               <div className="flex flex-col gap-2 mb-4">
                 <label htmlFor="name" className="block fw-bold tracking-tight">
                   Category Name

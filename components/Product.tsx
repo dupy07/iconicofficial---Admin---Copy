@@ -353,7 +353,7 @@ const ProductComponent: React.FC = () => {
         />
       </div>
 
-      <div className="rounded-md border bg-background">
+      <div className="rounded-md border bg-secondary">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

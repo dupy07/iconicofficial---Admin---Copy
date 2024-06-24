@@ -69,13 +69,13 @@ const Categories = () => {
         <div className="flex justify-between items-center pt-3 pb-8">
           <h3 className="text-2xl fw-bold pb-2">Categories</h3>
           <button
-            className="bg-green-500 text-white px-3 py-2 rounded-lg"
+            className="bg-green-500 text-primary px-3 py-2 rounded-lg"
             onClick={() => router.push("/Categories/AddCategory")}
           >
             Add Category
           </button>
         </div>
-        <table className="min-w-full bg-background border border-gray-300">
+        <table className="min-w-full bg-secondary border">
           <thead className="border-b fs-600 fw-bold">
             <tr>
               <th className="w-16 p-4 text-left">#</th>
@@ -105,7 +105,7 @@ const Categories = () => {
               categories.map((category, index) => (
                 <tr
                   key={category._id}
-                  className="border-b hover:bg-gray-100 cursor-pointer"
+                  className="border-b cursor-pointer"
                   onClick={() => handleRowClick(category)}
                 >
                   <td className="p-4">{index + 1}</td>
