@@ -16,7 +16,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className={`md:ml-60 w-full ${isSidebarOpen ? "ml-0" : "ml-0"}`}>
         <Header toggleSidebar={toggleSidebar} />
-        <div className="p-3">{children}</div>
+        <div className="p-4">{children}</div>
       </div>
     </div>
   );
