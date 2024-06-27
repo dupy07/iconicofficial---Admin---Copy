@@ -1,11 +1,11 @@
-import Dashboard from "./Dashboard/page";
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <>
-      <div>
-        <Dashboard />
-      </div>
-    </>
-  );
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/Dashboard");
+  }, [router]);
+  return null;
 }
