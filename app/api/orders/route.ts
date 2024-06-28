@@ -23,7 +23,34 @@ const validateFields = (body: any) => {
   }
   return null;
 };
+// GET: Fetch all orders
+export async function GET(req: NextRequest) {
+  try {
+    await connectMongoDB();
+    const orders = await Order.find({});
 
+    return NextResponse.json(
+      {
+        success: true,
+        data: orders,
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "An error occurred",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
 // Function to update the available quantity of a product
 async function updateAvailableQuantity(productId: string) {
   const product = await Product.findById(productId);
@@ -88,35 +115,6 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 201, // Use 201 Created status for successful resource creation
-      }
-    );
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "An error occurred",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
-}
-
-// GET: Fetch all orders
-export async function GET(req: NextRequest) {
-  try {
-    await connectMongoDB();
-    const orders = await Order.find({});
-
-    return NextResponse.json(
-      {
-        success: true,
-        data: orders,
-      },
-      {
-        status: 200,
       }
     );
   } catch (e) {

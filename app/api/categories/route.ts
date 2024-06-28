@@ -2,6 +2,30 @@ import connectMongoDB from "@/libs/connectMongoDB";
 import { Category } from "@/libs/model/category";
 import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
+// GET: Fetch all categories
+export async function GET(req: NextRequest) {
+  try {
+    await connectMongoDB();
+    const categories = await Category.find({});
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: categories,
+      },
+      { status: 200 }
+    );
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "An error occurred",
+      },
+      { status: 500 }
+    );
+  }
+}
 
 // POST: Create a new category
 export async function POST(req: NextRequest) {
@@ -18,31 +42,6 @@ export async function POST(req: NextRequest) {
         data: createdCategory,
       },
       { status: 201 }
-    );
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "An error occurred",
-      },
-      { status: 500 }
-    );
-  }
-}
-
-// GET: Fetch all categories
-export async function GET(req: NextRequest) {
-  try {
-    await connectMongoDB();
-    const categories = await Category.find({});
-
-    return NextResponse.json(
-      {
-        success: true,
-        data: categories,
-      },
-      { status: 200 }
     );
   } catch (e) {
     console.error(e);

@@ -33,7 +33,34 @@ async function updateAvailableQuantity(productId: string) {
   product.availableQuantity = availableQuantity;
   await product.save();
 }
+// GET: Fetch all products
+export async function GET(req: NextRequest) {
+  try {
+    await connectMongoDB();
+    const products = await Product.find({}).populate("category");
 
+    return NextResponse.json(
+      {
+        success: true,
+        data: products,
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "An error occurred",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
 // POST: Create a new product
 export async function POST(req: NextRequest) {
   try {
@@ -73,35 +100,6 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 201, // Use 201 Created status for successful resource creation
-      }
-    );
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "An error occurred",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
-}
-
-// GET: Fetch all products
-export async function GET(req: NextRequest) {
-  try {
-    await connectMongoDB();
-    const products = await Product.find({}).populate("category");
-
-    return NextResponse.json(
-      {
-        success: true,
-        data: products,
-      },
-      {
-        status: 200,
       }
     );
   } catch (e) {
